@@ -1,0 +1,46 @@
+{
+    "name": "cable8mm/n-format",
+    "description": "Small NumberFormatter Extension Library",
+    "keywords": [
+        "numberformatter",
+        "extension",
+        "n-format",
+        "tdd",
+        "php"
+    ],
+    "type": "library",
+    "require": {
+        "php": ">=7.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sam Lee",
+            "email": "cable8mm@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "classmap": [
+            "src/"
+        ],
+        "psr-4": {
+            "Cable8mm\\NFormat\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cable8mm\\NFormat\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "test": [
+            "./vendor/bin/phpunit tests"
+        ]
+    }
+}
