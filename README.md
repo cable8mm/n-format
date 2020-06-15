@@ -1,5 +1,9 @@
 # N-Format
 
+![Build](https://github.com/cable8mm/n-format/workflows/Build/badge.svg)
+[![Latest Stable Version](https://poser.pugx.org/cable8mm/n-format/v)](//packagist.org/packages/cable8mm/n-format)
+[![StyleCI](https://github.styleci.io/repos/272403982/shield?branch=master)](https://github.styleci.io/repos/272403982)
+
 ## About
 
 N-Format is small NumberFormatter Extension Library.
