@@ -13,7 +13,7 @@ N-Format is small NumberFormatter Extension Library.
 Install:
 
 ```sh
-composer require Cable8mm\\NFormat
+composer require cable8mm/n-format
 ```
 
 Test:
