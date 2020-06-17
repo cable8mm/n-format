@@ -46,7 +46,7 @@ echo NFormat::spellOut(5);
 
 ```
 
-New special method `ordinalSpellOut`(only ko_KR):
+New special method `ordinalSpellOut` and `currencySpellOut`(only ko_KR):
 ```php
 <?php
 
@@ -54,6 +54,11 @@ echo NFormat::ordinalSpellOut(10);
 
 // output
 // 열번째
+
+echo NFormat::currencySpellOut(12346);
+
+// output
+// 12,346 원
 ```
 
 ## License
