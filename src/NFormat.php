@@ -14,7 +14,10 @@ class NFormat extends NumberFormatter
 
     public static function spellOut(int $number): string
     {
-        return static::create(static::$locale, NumberFormatter::SPELLOUT)->format($number);
+        return static::create(
+            static::$locale,
+            NumberFormatter::SPELLOUT
+        )->format($number);
     }
 
     public static function ordinalSpellOut(int $number): string
@@ -35,9 +38,15 @@ class NFormat extends NumberFormatter
      */
     public static function currency($number): string
     {
-        return static::create(static::$locale, NumberFormatter::CURRENCY)->formatCurrency((float)$number, static::$currency);
+        return static::create(
+            static::$locale,
+            NumberFormatter::CURRENCY
+        )->formatCurrency((float)$number, static::$currency);
     }
 
+    /**
+     * @param int|float $number
+     */
     public static function currencySpellOut($number): string
     {
         $currencySpellOut = static::create(
