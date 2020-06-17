@@ -42,4 +42,20 @@ class NFormatTest extends TestCase
         $ordinal = NFormat::ordinalSpellOut(149);
         $this->assertEquals('백사십구번째', $ordinal);
     }
+
+    public function testCurrency()
+    {
+        NFormat::$locale = 'ko_KR';
+
+        $currency = NFormat::currency(12346);
+        $this->assertEquals('₩12,346', $currency);
+    }
+
+    public function testCurrencySpeelOut()
+    {
+        NFormat::$locale = 'ko_KR';
+
+        $currency = NFormat::currencySpellOut(12346);
+        $this->assertEquals('12,346 원', $currency);
+    }
 }
