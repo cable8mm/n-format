@@ -27,6 +27,17 @@ composer test
 ```php
 <?php
 
+echo NFormat::currency(358762);
+
+// default locale = 'ko_KR' currency = 'KRW'
+// output
+// ₩358,762
+```
+
+
+```php
+<?php
+
 echo NFormat::spellOut(5);
 
 // default locale = 'ko_KR' currency = 'KRW'
