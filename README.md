@@ -3,6 +3,7 @@
 ![Build](https://github.com/cable8mm/n-format/workflows/Build/badge.svg)
 [![Latest Stable Version](https://poser.pugx.org/cable8mm/n-format/v)](//packagist.org/packages/cable8mm/n-format)
 [![StyleCI](https://github.styleci.io/repos/272403982/shield?branch=master)](https://github.styleci.io/repos/272403982)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/cable8mm/n-format/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/cable8mm/n-format/?branch=master)
 
 ## About
 
