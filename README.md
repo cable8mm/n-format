@@ -58,6 +58,26 @@ echo NFormat::spellOut(5);
 
 ```
 
+```php
+<?php
+
+echo NFormat::decimal(12346);
+
+// output
+// 12,346
+
+echo NFormat::percent(12346);
+
+// output
+// 1,234,600%
+
+echo NFormat::rawPercent(12346);
+
+// output
+// 12,346%
+
+```
+
 New special method `ordinalSpellOut` and `currencySpellOut`(only ko_KR):
 ```php
 <?php
