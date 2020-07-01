@@ -25,6 +25,8 @@ composer test
 
 ## Usage
 
+General:
+
 ```php
 <?php
 
@@ -91,6 +93,12 @@ echo NFormat::currencySpellOut(12346);
 
 // output
 // 12,346 원
+```
+
+Laravel Blade(No need installation):
+
+```blade
+{ NFormatHelper::currency(12346) }
 ```
 
 ## License
