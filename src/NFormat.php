@@ -71,4 +71,37 @@ class NFormat extends NumberFormatter
 
         return $currencySpellOut;
     }
+
+    /**
+     * @param int|float $number
+     */
+    public static function percent($number): string
+    {
+        return static::create(
+            static::$locale,
+            NumberFormatter::PERCENT_SYMBOL
+        )->format((float)$number);
+    }
+
+    /**
+     * @param int|float $number
+     */
+    public static function rawPercent($number): string
+    {
+        return static::create(
+            static::$locale,
+            NumberFormatter::PERCENT_SYMBOL
+        )->format((float)($number / 100));
+    }
+
+    /**
+     * @param int $number
+     */
+    public static function decimal($number): string
+    {
+        return static::create(
+            static::$locale,
+            NumberFormatter::DECIMAL
+        )->format($number);
+    }
 }

@@ -58,4 +58,31 @@ class NFormatTest extends TestCase
         $currency = NFormat::currencySpellOut(12346);
         $this->assertEquals('12,346 원', $currency);
     }
+
+    public function testPercent()
+    {
+        NFormat::$locale = 'ko_KR';
+
+        $percent = NFormat::percent(12346);
+
+        $this->assertEquals('1,234,600%', $percent);
+    }
+
+    public function testRawPercent()
+    {
+        NFormat::$locale = 'ko_KR';
+
+        $percent = NFormat::rawPercent(12346);
+
+        $this->assertEquals('12,346%', $percent);
+    }
+
+    public function testDecimal()
+    {
+        NFormat::$locale = 'ko_KR';
+
+        $decimal = NFormat::decimal(12346);
+
+        $this->assertEquals('12,346', $decimal);
+    }
 }
