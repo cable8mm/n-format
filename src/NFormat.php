@@ -36,8 +36,12 @@ class NFormat extends NumberFormatter
     /**
      * @param int|float $number
      */
-    public static function currency($number): string
+    public static function currency($number, string $zero = '0'): string
     {
+        if (($number === 0 || $number === 0.0) && $zero !== '0') {
+            return $zero;
+        }
+
         return static::create(
             static::$locale,
             NumberFormatter::CURRENCY
