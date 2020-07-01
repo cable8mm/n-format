@@ -34,7 +34,7 @@ class NFormat extends NumberFormatter
     }
 
     /**
-     * @param int|float $number
+     * @param int|float|null $number
      */
     public static function currency($number, string $zero = '0'): string
     {
