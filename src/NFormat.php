@@ -95,7 +95,7 @@ class NFormat extends NumberFormatter
     }
 
     /**
-     * @param int $number
+     * @param int|float $number
      */
     public static function decimal($number): string
     {
