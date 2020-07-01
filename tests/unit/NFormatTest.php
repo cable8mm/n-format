@@ -51,6 +51,20 @@ class NFormatTest extends TestCase
         $this->assertEquals('₩12,346', $currency);
     }
 
+    public function testCurrencyZero()
+    {
+        NFormat::$locale = 'ko_KR';
+
+        $currency = NFormat::currency(0, '-');
+        $this->assertEquals('-', $currency);
+
+        $currency = NFormat::currency(123, '-');
+        $this->assertEquals('₩123', $currency);
+
+        $currency = NFormat::currency(null, '-');
+        $this->assertEquals('-', $currency);
+    }
+
     public function testCurrencySpeelOut()
     {
         NFormat::$locale = 'ko_KR';

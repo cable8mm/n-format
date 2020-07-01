@@ -38,7 +38,7 @@ class NFormat extends NumberFormatter
      */
     public static function currency($number, string $zero = '0'): string
     {
-        if (($number === 0 || $number === 0.0) && $zero !== '0') {
+        if (($number === 0 || $number === 0.0 || is_null($number)) && $zero !== '0') {
             return $zero;
         }
 
