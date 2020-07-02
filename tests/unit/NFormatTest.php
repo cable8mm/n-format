@@ -96,7 +96,12 @@ class NFormatTest extends TestCase
         NFormat::$locale = 'ko_KR';
 
         $decimal = NFormat::decimal(12346);
-
         $this->assertEquals('12,346', $decimal);
+
+        $decimal = NFormat::decimal(123, '-');
+        $this->assertEquals('123', $decimal);
+
+        $decimal = NFormat::decimal(null, '-');
+        $this->assertEquals('-', $decimal);
     }
 }
