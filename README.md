@@ -1,6 +1,6 @@
 # N-Format
 
-![Build](https://github.com/cable8mm/n-format/workflows/Build/badge.svg)
+[![Build](https://github.com/cable8mm/n-format/actions/workflows/php.yml/badge.svg)](https://github.com/cable8mm/n-format/actions/workflows/php.yml)
 [![Latest Stable Version](http://poser.pugx.org/cable8mm/n-format/v)](https://packagist.org/packages/cable8mm/n-format) [![Total Downloads](http://poser.pugx.org/cable8mm/n-format/downloads)](https://packagist.org/packages/cable8mm/n-format) [![Latest Unstable Version](http://poser.pugx.org/cable8mm/n-format/v/unstable)](https://packagist.org/packages/cable8mm/n-format) [![License](http://poser.pugx.org/cable8mm/n-format/license)](https://packagist.org/packages/cable8mm/n-format) [![PHP Version Require](http://poser.pugx.org/cable8mm/n-format/require/php)](https://packagist.org/packages/cable8mm/n-format)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/cable8mm/n-format/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/cable8mm/n-format/?branch=master)
 
