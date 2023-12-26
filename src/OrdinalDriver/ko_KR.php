@@ -15,6 +15,6 @@ return function (int $number) {
     ];
 
     return array_key_exists($number, $ordinals) ?
-        $ordinals[$number] . '번째'
-        : (new NumberFormatter('ko_KR', NumberFormatter::SPELLOUT))->format($number) . '번째';
+        $ordinals[$number].'번째'
+        : (new NumberFormatter('ko_KR', NumberFormatter::SPELLOUT))->format($number).'번째';
 };

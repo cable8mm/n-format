@@ -1,8 +1,11 @@
 # N-Format
 
-[![Build](https://github.com/cable8mm/n-format/actions/workflows/php.yml/badge.svg)](https://github.com/cable8mm/n-format/actions/workflows/php.yml)
-[![Latest Stable Version](http://poser.pugx.org/cable8mm/n-format/v)](https://packagist.org/packages/cable8mm/n-format) [![Total Downloads](http://poser.pugx.org/cable8mm/n-format/downloads)](https://packagist.org/packages/cable8mm/n-format) [![Latest Unstable Version](http://poser.pugx.org/cable8mm/n-format/v/unstable)](https://packagist.org/packages/cable8mm/n-format) [![License](http://poser.pugx.org/cable8mm/n-format/license)](https://packagist.org/packages/cable8mm/n-format) [![PHP Version Require](http://poser.pugx.org/cable8mm/n-format/require/php)](https://packagist.org/packages/cable8mm/n-format)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/cable8mm/n-format/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/cable8mm/n-format/?branch=master)
+[![PHP Linting (Pint)](https://github.com/cable8mm/n-format/actions/workflows/lint.yml/badge.svg)](https://github.com/cable8mm/n-format/actions/workflows/lint.yml)
+[![Test](https://github.com/cable8mm/n-format/actions/workflows/test.yml/badge.svg)](https://github.com/cable8mm/n-format/actions/workflows/test.yml)
+[![Latest release](https://img.shields.io/github/v/release/cable8mm/n-format?sort=semver)](https://github.com/cable8mm/n-format/releases/latest)
+[![Total Downloads](http://poser.pugx.org/cable8mm/n-format/downloads)](https://packagist.org/packages/cable8mm/n-format)
+![GitHub License](https://img.shields.io/github/license/cable8mm/n-format)
+[![PHP Version Require](http://poser.pugx.org/cable8mm/n-format/require/php)](https://packagist.org/packages/cable8mm/n-format)
 
 ## About
 
@@ -10,16 +13,8 @@ N-Format is small NumberFormatter Extension Library.
 
 # Install
 
-Install:
-
 ```sh
 composer require cable8mm/n-format
-```
-
-Test:
-
-```sh
-composer test
 ```
 
 ## Usage
@@ -98,6 +93,18 @@ Laravel Blade(No need installation):
 
 ```blade
 { NFormatHelper::currency(12346) }
+```
+
+## Coding style
+
+```sh
+composer lint
+```
+
+## Test
+
+```sh
+composer test
 ```
 
 ## License
