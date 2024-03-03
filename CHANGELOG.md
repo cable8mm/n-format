@@ -1,5 +1,16 @@
 # Release Notes
 
+## v1.2.2 - 2024-03-03
+
+### What's Changed
+
+* rewrite readme badge by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/2
+* fix a readme build badge by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/3
+* Apply pint by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/4
+* Configure php vesions action over 8.0-8.3 by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/5
+
+**Full Changelog**: https://github.com/cable8mm/n-format/compare/v1.2.1...v1.2.2
+
 ## v1.2.1 - 2023-07-19
 
 ## What's Changed
@@ -35,8 +46,8 @@ echo NFormat::rawPercent(12346);
 
 // output
 // 12,346%
-```
 
+```
 **Full Changelog**: https://github.com/cable8mm/n-format/compare/v1.1...v1.2
 
 ## v1.1.0 - 2020-06-17
