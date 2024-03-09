@@ -1,19 +1,19 @@
 <?php
 
-declare(strict_types=1);
+namespace Cable8mm\NFormat\Tests;
 
 use Cable8mm\NFormat\NFormat;
 use PHPUnit\Framework\TestCase;
 
 class NFormatTest extends TestCase
 {
-    public function testSpellOut()
+    public function test_spell_out(): void
     {
         $spellOut = NFormat::spellOut(5);
         $this->assertEquals($spellOut, '오');
     }
 
-    public function testSpellOutJapanese()
+    public function test_spell_out_japanese(): void
     {
         NFormat::$locale = 'ja_JP';
 
@@ -21,7 +21,7 @@ class NFormatTest extends TestCase
         $this->assertEquals($spellOut, '五');
     }
 
-    public function testOrdinal()
+    public function test_ordinal(): void
     {
         NFormat::$locale = 'ko_KR';
 
@@ -43,7 +43,7 @@ class NFormatTest extends TestCase
         $this->assertEquals('백사십구번째', $ordinal);
     }
 
-    public function testCurrency()
+    public function test_currency(): void
     {
         NFormat::$locale = 'ko_KR';
 
@@ -51,7 +51,7 @@ class NFormatTest extends TestCase
         $this->assertEquals('₩12,346', $currency);
     }
 
-    public function testCurrencyZero()
+    public function test_currency_zero(): void
     {
         NFormat::$locale = 'ko_KR';
 
@@ -65,7 +65,7 @@ class NFormatTest extends TestCase
         $this->assertEquals('-', $currency);
     }
 
-    public function testCurrencySpeelOut()
+    public function test_currency_speech_out(): void
     {
         NFormat::$locale = 'ko_KR';
 
@@ -73,7 +73,7 @@ class NFormatTest extends TestCase
         $this->assertEquals('12,346 원', $currency);
     }
 
-    public function testPercent()
+    public function test_percent(): void
     {
         NFormat::$locale = 'ko_KR';
 
@@ -82,7 +82,7 @@ class NFormatTest extends TestCase
         $this->assertEquals('1,234,600%', $percent);
     }
 
-    public function testRawPercent()
+    public function test_raw_percent(): void
     {
         NFormat::$locale = 'ko_KR';
 
@@ -91,7 +91,7 @@ class NFormatTest extends TestCase
         $this->assertEquals('12,346%', $percent);
     }
 
-    public function testDecimal()
+    public function test_decimal(): void
     {
         NFormat::$locale = 'ko_KR';
 
