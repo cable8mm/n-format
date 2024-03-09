@@ -1,5 +1,14 @@
 # Release Notes
 
+## v1.2.3 - 2024-03-09
+
+### What's Changed
+
+* Add classes and methods to support API documentation by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/6
+* Update the README with detailed information by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/7
+
+**Full Changelog**: https://github.com/cable8mm/n-format/compare/v1.2.2...v1.2.3
+
 ## v1.2.2 - 2024-03-03
 
 ### What's Changed
@@ -46,6 +55,7 @@ echo NFormat::rawPercent(12346);
 
 // output
 // 12,346%
+
 
 ```
 **Full Changelog**: https://github.com/cable8mm/n-format/compare/v1.1...v1.2
