@@ -1,11 +1,12 @@
 # N-Format
 
-[![PHP Linting (Pint)](https://github.com/cable8mm/n-format/actions/workflows/lint.yml/badge.svg)](https://github.com/cable8mm/n-format/actions/workflows/lint.yml)
-[![Test](https://github.com/cable8mm/n-format/actions/workflows/test.yml/badge.svg)](https://github.com/cable8mm/n-format/actions/workflows/test.yml)
-[![Latest release](https://img.shields.io/github/v/release/cable8mm/n-format?sort=semver)](https://github.com/cable8mm/n-format/releases/latest)
-[![Total Downloads](http://poser.pugx.org/cable8mm/n-format/downloads)](https://packagist.org/packages/cable8mm/n-format)
-![GitHub License](https://img.shields.io/github/license/cable8mm/n-format)
-[![PHP Version Require](http://poser.pugx.org/cable8mm/n-format/require/php)](https://packagist.org/packages/cable8mm/n-format)
+[![code-style](https://github.com/cable8mm/n-format/actions/workflows/code-style.yml/badge.svg)](https://github.com/cable8mm/n-format/actions/workflows/code-style.yml)
+[![run-tests](https://github.com/cable8mm/n-format/actions/workflows/run-tests.yml/badge.svg)](https://github.com/cable8mm/n-format/actions/workflows/run-tests.yml)
+![Packagist Version](https://img.shields.io/packagist/v/cable8mm/n-format)
+![Packagist Downloads](https://img.shields.io/packagist/dt/cable8mm/n-format)
+![Packagist Dependency Version](https://img.shields.io/packagist/dependency-v/cable8mm/n-format/php)
+![Packagist Stars](https://img.shields.io/packagist/stars/cable8mm/n-format)
+![Packagist License](https://img.shields.io/packagist/l/cable8mm/n-format)
 
 ## About
 

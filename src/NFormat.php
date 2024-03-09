@@ -4,16 +4,40 @@ namespace Cable8mm\NFormat;
 
 use NumberFormatter;
 
+/**
+ * Number formatter for not following rules like Korean and Japanese.
+ */
 class NFormat extends NumberFormatter
 {
+    /**
+     * Default locale name.
+     */
     public static $locale = 'ko_KR';
 
+    /**
+     * Default ISO 4217 code aka currency code.
+     */
     public static $currency = 'KRW';
 
+    /**
+     * Drivers path for the ordinals.
+     */
     private const ORDINAL_DRIVER_PATH = __DIR__.'/OrdinalDriver/';
 
+    /*
+    * Drivers path for the currency ordinals.
+    */
     private const CURRENCY_DRIVER_PATH = __DIR__.'/CurrencyDriver/';
 
+    /**
+     * Wrapper for NumberFormatter::format($locale, NumberFormatter::SPELLOUT).
+     *
+     * @param  int  $number  Number not to be formatted.
+     * @return string Formatted number
+     *
+     * @example NFormat::spellOut(5);
+     * //=> 오
+     */
     public static function spellOut(int $number): string
     {
         return static::create(
@@ -22,6 +46,15 @@ class NFormat extends NumberFormatter
         )->format($number);
     }
 
+    /**
+     * Spell out ordinals for specific regions.
+     *
+     * @param  int  $number  Number not to be formatted.
+     * @return string Spell out ordinal.
+     *
+     * @example NFormat::spellOut(10);
+     * //=> 열번째
+     */
     public static function ordinalSpellOut(int $number): string
     {
         $ordinalDriverPath = static::ORDINAL_DRIVER_PATH.static::$locale.'.php';
@@ -36,9 +69,15 @@ class NFormat extends NumberFormatter
     }
 
     /**
-     * @param  int|float|null  $number
+     * Wrapper for NumberFormatter::format($locale, NumberFormatter::CURRENCY).
+     *
+     * @param  int|float|null  $number  Number not to be formatted
+     * @param  string  $zero  If $number is 0, $zero will be returned.
+     *
+     * @example NFormat::currency(358762);
+     * //=> ₩358,762
      */
-    public static function currency($number, string $zero = '0'): string
+    public static function currency(int|float|null $number, string $zero = '0'): string
     {
         if (($number === 0 || $number === 0.0 || is_null($number)) && $zero !== '0') {
             return $zero;
@@ -51,7 +90,13 @@ class NFormat extends NumberFormatter
     }
 
     /**
-     * @param  int|float  $number
+     * Spell out currency ordinals for specific regions.
+     *
+     * @param  int  $number  Number not to be formatted.
+     * @return string Spell out currency ordinal.
+     *
+     * @example NFormat::spellOut(12346);
+     * //=> 12,346원
      */
     public static function currencySpellOut($number): string
     {
@@ -79,9 +124,14 @@ class NFormat extends NumberFormatter
     }
 
     /**
-     * @param  int|float  $number
+     * Wrapper for NumberFormatter::format($locale, NumberFormatter::PERCENT_SYMBOL).
+     *
+     * @param  int  $number  Number not to be formatted
+     *
+     * @example NFormat::percent(12346);
+     * //=> 1,234,600%
      */
-    public static function percent($number): string
+    public static function percent(int $number): string
     {
         return static::create(
             static::$locale,
@@ -90,9 +140,14 @@ class NFormat extends NumberFormatter
     }
 
     /**
-     * @param  int|float  $number
+     * Wrapper for NumberFormatter::format($locale, NumberFormatter::PERCENT_SYMBOL).
+     *
+     * @param  int  $number  Number not to be formatted
+     *
+     * @example NFormat::percent(12346);
+     * //=> 12,346%
      */
-    public static function rawPercent($number): string
+    public static function rawPercent(int $number): string
     {
         return static::create(
             static::$locale,
@@ -101,9 +156,15 @@ class NFormat extends NumberFormatter
     }
 
     /**
-     * @param  int|float  $number
+     * Wrapper for NumberFormatter::format($locale, NumberFormatter::DECIMAL).
+     *
+     * @param  int|float|null  $number  Number not to be formatted
+     * @param  string  $zero  If $number is 0, $zero will be returned.
+     *
+     * @example NFormat::decimal(358762);
+     * //=> 358,762
      */
-    public static function decimal($number, string $zero = '0'): string
+    public static function decimal(int|float|null $number, string $zero = '0'): string
     {
         if (($number === 0 || $number === 0.0 || is_null($number)) && $zero !== '0') {
             return $zero;
