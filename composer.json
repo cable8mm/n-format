@@ -2,7 +2,7 @@
     "name": "cable8mm/n-format",
     "description": "Small NumberFormatter Extension Library",
     "keywords": [
-        "numberformatter",
+        "number-formatter",
         "extension",
         "n-format",
         "tdd",
@@ -25,9 +25,6 @@
         }
     ],
     "autoload": {
-        "classmap": [
-            "src/"
-        ],
         "psr-4": {
             "Cable8mm\\NFormat\\": "src/"
         }
@@ -40,12 +37,10 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "lint": [
-            "./vendor/bin/pint"
-        ],
-        "test": [
-            "./vendor/bin/phpunit tests"
-        ]
+        "test": "./vendor/bin/phpunit tests",
+        "lint": "./vendor/bin/pint",
+        "inspect": "./vendor/bin/pint --test",
+        "apidoc": "doctum.phar update doctum.php --output-format=github --no-ansi --no-progress"
     },
     "extra": {
         "laravel": {
