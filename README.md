@@ -8,9 +8,11 @@
 ![Packagist Stars](https://img.shields.io/packagist/stars/cable8mm/n-format)
 ![Packagist License](https://img.shields.io/packagist/l/cable8mm/n-format)
 
-## About
+PHP already includes NumberFormat classes and functions, but they may not be available for some countries like Korea and Japan. Therefore, we provide a small wrapper library to extend NumberFormat, similar to how Carbon extends DateTime. Additionally, some additional functions have been provided.
 
-N-Format is small NumberFormatter Extension Library.
+If you have used Laravel, you could use `NFormatHelper` helper class. Refer to the [Usage Laravel Helper](###Laravel-Helper) section.
+
+We have provided the API Documentation on the web. For more information, please visit https://www.palgle.com/n-format/ ❤️
 
 # Install
 
@@ -23,83 +25,63 @@ composer require cable8mm/n-format
 General:
 
 ```php
-<?php
-
-echo NFormat::currency(358762);
-
+print NFormat::currency(358762);
 // default locale = 'ko_KR' currency = 'KRW'
-// output
-// ₩358,762
+//=> ₩358,762
 ```
 
 ```php
-<?php
-
-echo NFormat::spellOut(5);
-
+print NFormat::spellOut(5);
 // default locale = 'ko_KR' currency = 'KRW'
-// output
-// 오
+//=> 오
 ```
 
 ```php
-<?php
-
 NFormat::$locale = 'ja_JP';
 
-echo NFormat::spellOut(5);
-
-// output
-// 五
+print NFormat::spellOut(5);
+//=> 五
 
 ```
 
 ```php
-<?php
+print NFormat::decimal(12346);
+//=> 12,346
 
-echo NFormat::decimal(12346);
+print NFormat::percent(12346);
+//=> 1,234,600%
 
-// output
-// 12,346
-
-echo NFormat::percent(12346);
-
-// output
-// 1,234,600%
-
-echo NFormat::rawPercent(12346);
-
-// output
-// 12,346%
+print NFormat::rawPercent(12346);
+//=> 12,346%
 
 ```
 
 New special method `ordinalSpellOut` and `currencySpellOut`(only ko_KR):
 
 ```php
-<?php
+print NFormat::ordinalSpellOut(10);
+//=> 열번째
 
-echo NFormat::ordinalSpellOut(10);
-
-// output
-// 열번째
-
-echo NFormat::currencySpellOut(12346);
-
-// output
-// 12,346 원
+print NFormat::currencySpellOut(12346);
+//=> 12,346 원
 ```
 
-Laravel Blade(No need installation):
+### Laravel Helper
+
+You can utilize this in Laravel Blade without any need for installation:
 
 ```blade
-{ NFormatHelper::currency(12346) }
+{{ NFormatHelper::currency(12346) }}
 ```
 
-## Coding style
+## Formatting
 
 ```sh
 composer lint
+# Modify all files to comply with the PSR-12.
+
+composer inspect
+# Inspect all files to ensure compliance with PSR-12.
 ```
 
 ## Test
