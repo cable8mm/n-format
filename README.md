@@ -10,11 +10,11 @@
 
 PHP already includes NumberFormat classes and functions, but they may not be available for some countries like Korea and Japan. Therefore, we provide a small wrapper library to extend NumberFormat, similar to how Carbon extends DateTime. Additionally, some additional functions have been provided.
 
-If you have used Laravel, you could use `NFormatHelper` helper class. Refer to the [Usage Laravel Helper](###Laravel-Helper) section.
+If you have used Laravel, you could use `NFormatHelper` helper class. Refer to the [Usage Laravel Helper](#laravel-helper) section.
 
-We have provided the API Documentation on the web. For more information, please visit https://www.palgle.com/n-format/ ❤️
+We have provided the API Documentation on the web. For more information, please visit <https://www.palgle.com/n-format/> ❤️
 
-# Install
+## Install
 
 ```sh
 composer require cable8mm/n-format
@@ -64,6 +64,31 @@ print NFormat::ordinalSpellOut(10);
 
 print NFormat::currencySpellOut(12346);
 //=> 12,346 원
+```
+
+You can also use `price()` and `smartPrice()` to calculate the price for customers.
+
+```php
+print NFormat::price(12346, -2);
+//=> 12300
+
+print NFormat::price(12346.23, 1);
+//=> 12346.20
+
+print NFormat::smartPrice(12346);
+//=> 12300
+
+print NFormat::smartPrice(123467);
+//=> 123000
+
+print NFormat::smartPrice(1234678);
+//=> 1230000
+
+print NFormat::smartPrice(12346432);
+//=> 12350000
+
+print NFormat::smartPrice(3212343232);
+//=> 3212340000
 ```
 
 ### Laravel Helper
