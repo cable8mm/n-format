@@ -35,8 +35,7 @@ class NFormat extends NumberFormatter
      * @param  int  $number  Number not to be formatted.
      * @return string Formatted number
      *
-     * @example NFormat::spellOut(5);
-     * //=> 오
+     * @example NFormat::spellOut(5) => 오
      */
     public static function spellOut(int $number): string
     {
@@ -52,8 +51,7 @@ class NFormat extends NumberFormatter
      * @param  int  $number  Number not to be formatted.
      * @return string Spell out ordinal.
      *
-     * @example NFormat::spellOut(10);
-     * //=> 열번째
+     * @example NFormat::spellOut(10) => 열번째
      */
     public static function ordinalSpellOut(int $number): string
     {
@@ -74,8 +72,7 @@ class NFormat extends NumberFormatter
      * @param  int|float|null  $number  Number not to be formatted
      * @param  string  $zero  If $number is 0, $zero will be returned.
      *
-     * @example NFormat::currency(358762);
-     * //=> ₩358,762
+     * @example NFormat::currency(358762) => ₩358,762
      */
     public static function currency(int|float|null $number, string $zero = '0'): string
     {
@@ -95,8 +92,7 @@ class NFormat extends NumberFormatter
      * @param  int  $number  Number not to be formatted.
      * @return string Spell out currency ordinal.
      *
-     * @example NFormat::spellOut(12346);
-     * //=> 12,346원
+     * @example NFormat::spellOut(12346) => 12,346원
      */
     public static function currencySpellOut($number): string
     {
@@ -128,8 +124,7 @@ class NFormat extends NumberFormatter
      *
      * @param  int  $number  Number not to be formatted
      *
-     * @example NFormat::percent(12346);
-     * //=> 1,234,600%
+     * @example NFormat::percent(12346) => 1,234,600%
      */
     public static function percent(int $number): string
     {
@@ -144,8 +139,7 @@ class NFormat extends NumberFormatter
      *
      * @param  int  $number  Number not to be formatted
      *
-     * @example NFormat::percent(12346);
-     * //=> 12,346%
+     * @example NFormat::percent(12346) => 12,346%
      */
     public static function rawPercent(int $number): string
     {
@@ -161,8 +155,7 @@ class NFormat extends NumberFormatter
      * @param  int|float|null  $number  Number not to be formatted
      * @param  string  $zero  If $number is 0, $zero will be returned.
      *
-     * @example NFormat::decimal(358762);
-     * //=> 358,762
+     * @example NFormat::decimal(358762) => 358,762
      */
     public static function decimal(int|float|null $number, string $zero = '0'): string
     {
@@ -176,6 +169,17 @@ class NFormat extends NumberFormatter
         )->format($number);
     }
 
+    /**
+     * Get the rounded price of a number
+     *
+     * @param  int|float  $number  The price
+     * @param  int|null  $roundDigits  The digits of rounding number
+     * @return string|false The method returns rounded number or false
+     *
+     * @example NFormat::price(12346, -2) => 12300
+     * @example NFormat::price(12346.0) => 12346.00
+     * @example NFormat::price(12346.23123, -2) => 12300.00
+     */
     public static function price(int|float $number, ?int $roundDigits = null): string|false
     {
         if (is_int($number)) {
@@ -189,6 +193,16 @@ class NFormat extends NumberFormatter
             : sprintf('%.2f', round($number, $roundDigits));
     }
 
+    /**
+     * Get the smart price of a number for shopping cart
+     *
+     * @param  int|float  $number  The price
+     * @return string|false The method returns smart rounded number or false
+     *
+     * @example NFormat::smartPrice(12346) => 12300
+     * @example NFormat::smartPrice(1234678) => 1230000
+     * @example NFormat::smartPrice(3212343232) => 3212340000
+     */
     public static function smartPrice(int|float $number): string|false
     {
         $numberOfDigits = (int) log10($number) + 1;
