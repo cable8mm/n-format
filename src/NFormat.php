@@ -108,7 +108,7 @@ class NFormat extends NumberFormatter
             static::$currency
         );
 
-        $currencyDriverPath = static::CURRENCY_DRIVER_PATH.static::$locale.'.php';
+        $currencyDriverPath = static::CURRENCY_DRIVER_PATH.static::$currency.'.php';
 
         if (file_exists($currencyDriverPath)) {
             $currencyPatterns = require $currencyDriverPath;
@@ -174,5 +174,41 @@ class NFormat extends NumberFormatter
             static::$locale,
             NumberFormatter::DECIMAL
         )->format($number);
+    }
+
+    public static function price(int|float $number, ?int $roundDigits = null): string|false
+    {
+        if (is_int($number)) {
+            return is_null($roundDigits)
+                ? round($number)
+                : round($number, $roundDigits);
+        }
+
+        return is_null($roundDigits)
+            ? sprintf('%.2f', $number)
+            : sprintf('%.2f', round($number, $roundDigits));
+    }
+
+    public static function smartPrice(int|float $number): string|false
+    {
+        $numberOfDigits = (int) log10($number) + 1;
+
+        $currencyDriverPath = static::CURRENCY_DRIVER_PATH.static::$currency.'.php';
+
+        if (file_exists($currencyDriverPath)) {
+            $currencyPatterns = require $currencyDriverPath;
+
+            if (array_key_exists('roundDigits', $currencyPatterns)) {
+                $roundDigits = $currencyPatterns['roundDigits'];
+
+                if (array_key_exists($numberOfDigits, $roundDigits)) {
+                    return self::price($number, $roundDigits[$numberOfDigits]);
+                }
+
+                return self::price($number, end($roundDigits));
+            }
+        }
+
+        return self::price($number);
     }
 }

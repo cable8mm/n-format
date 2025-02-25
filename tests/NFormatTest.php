@@ -104,4 +104,44 @@ class NFormatTest extends TestCase
         $decimal = NFormat::decimal(null, '-');
         $this->assertEquals('-', $decimal);
     }
+
+    public function test_price(): void
+    {
+        NFormat::$locale = 'ko_KR';
+
+        $price = NFormat::price(12346, -2);
+        $this->assertEquals('12300', $price);
+
+        $price = NFormat::price(12346, 2);
+        $this->assertEquals('12346', $price);
+
+        $price = NFormat::price(12346.0);
+        $this->assertEquals('12346.00', $price);
+
+        $price = NFormat::price(12346.23123, -2);
+        $this->assertEquals('12300.00', $price);
+
+        $price = NFormat::price(12346.23, 1);
+        $this->assertEquals('12346.20', $price);
+    }
+
+    public function test_smart_price(): void
+    {
+        NFormat::$locale = 'ko_KR';
+
+        $price = NFormat::smartPrice(12346);
+        $this->assertEquals('12300', $price);
+
+        $price = NFormat::smartPrice(123467);
+        $this->assertEquals('123000', $price);
+
+        $price = NFormat::smartPrice(1234678);
+        $this->assertEquals('1230000', $price);
+
+        $price = NFormat::smartPrice(12346432);
+        $this->assertEquals('12350000', $price);
+
+        $price = NFormat::smartPrice(3212343232);
+        $this->assertEquals('3212340000', $price);
+    }
 }
