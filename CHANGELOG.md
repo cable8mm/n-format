@@ -1,5 +1,14 @@
 # Release Notes
 
+## v1.3.0 - 2025-02-25
+
+### What's Changed
+
+* Add `price()` and `smartPrice()` methods for paying reasonable by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/8
+* Add `doctum.php` file for api generating env by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/9
+
+**Full Changelog**: https://github.com/cable8mm/n-format/compare/v1.2.3...v1.3.0
+
 ## v1.2.3 - 2024-03-09
 
 ### What's Changed
@@ -55,6 +64,7 @@ echo NFormat::rawPercent(12346);
 
 // output
 // 12,346%
+
 
 
 ```
