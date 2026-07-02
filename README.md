@@ -8,31 +8,33 @@
 ![Packagist Stars](https://img.shields.io/packagist/stars/cable8mm/n-format)
 ![Packagist License](https://img.shields.io/packagist/l/cable8mm/n-format)
 
-PHP already includes NumberFormat classes and functions, but they may not be available for some countries like Korea and Japan. Therefore, we provide a small wrapper library to extend NumberFormat, similar to how Carbon extends DateTime. Additionally, some additional functions have been provided.
+## 왜 이 패키지를 만들었나?
 
-If you have used Laravel, you could use `NFormatHelper` helper class. Refer to the [Usage Laravel Helper](#laravel-helper) section.
+PHP에는 NumberFormatter 클래스와 함수가 내장되어 있지만, 한국이나 일본과 같은 일부 국가에서는 사용할 수 없을 수 있습니다. 따라서 우리는 Carbon이 DateTime을 확장하는 것과 유사하게 NumberFormatter를 확장하는 작은 래퍼 라이브러리를 제공합니다. 또한 몇 가지 추가 기능을 제공합니다.
 
-We have provided the API Documentation on the web. For more information, please visit <https://www.palgle.com/n-format/> ❤️
+Laravel을 사용해 보셨다면 `NFormatHelper` 헬퍼 클래스를 사용할 수 있습니다. [Laravel Helper 사용](#laravel-helper) 섹션을 참조하세요.
 
-## Install
+API 문서를 웹에서 제공하고 있습니다. 자세한 내용은 <https://www.palgle.com/n-format/>를 방문해주세요 ❤️
+
+## 설치
 
 ```sh
 composer require cable8mm/n-format
 ```
 
-## Usage
+## 사용법
 
-General:
+### 기본 사용
 
 ```php
 print NFormat::currency(358762);
-// default locale = 'ko_KR' currency = 'KRW'
+// 기본 로케일 = 'ko_KR' 통화 = 'KRW'
 //=> ₩358,762
 ```
 
 ```php
 print NFormat::spellOut(5);
-// default locale = 'ko_KR' currency = 'KRW'
+// 기본 로케일 = 'ko_KR' 통화 = 'KRW'
 //=> 오
 ```
 
@@ -41,7 +43,6 @@ NFormat::$locale = 'ja_JP';
 
 print NFormat::spellOut(5);
 //=> 五
-
 ```
 
 ```php
@@ -55,14 +56,14 @@ print NFormat::rawPercent(12346);
 //=> 12,346%
 ```
 
-**Note:**
+**참고:**
 
-- `percent()` multiplies by 100 (12346 → 1,234,600%)
-- `rawPercent()` divides by 100 (12346 → 12,346%)
+- `percent()`는 100을 곱합니다 (12346 → 1,234,600%)
+- `rawPercent()`는 100으로 나눕니다 (12346 → 12,346%)
 
-### Ordinal & Currency Spell Out
+### 서수 및 통화 철자
 
-Special methods for Korean and Japanese ordinal expressions:
+한국어 및 일본어 서수 표현을 위한 특별한 메서드들:
 
 ```php
 print NFormat::ordinalSpellOut(10);
@@ -72,14 +73,14 @@ print NFormat::currencySpellOut(12346);
 //=> 12,346 원
 ```
 
-> **Note:** These methods currently support `ko_KR` locale with driver files. You can extend support for other locales by adding driver files.
+> **참고:** 이 메서드들은 현재 드라이버 파일이 있는 `ko_KR` 로케일만 지원합니다. 드라이버 파일을 추가하여 다른 로케일 지원을 확장할 수 있습니다.
 
-### Price Calculation
+### 가격 계산
 
-You can also use `price()` and `smartPrice()` to calculate the price for customers.
+고객에게 표시할 가격을 계산하기 위해 `price()`와 `smartPrice()`를 사용할 수 있습니다.
 
-- `price()`: Simple rounding with specified digits
-- `smartPrice()`: Intelligent rounding based on the number of digits (useful for shopping carts)
+- `price()`: 지정된 자릿수로 단순 반올림
+- `smartPrice()`: 숫자 자릿수에 따른 지능형 반올림 (쇼핑몰에 유용)
 
 ```php
 print NFormat::price(12346, -2);
@@ -104,93 +105,101 @@ print NFormat::smartPrice(3212343232);
 //=> 3212340000
 ```
 
+**스마트 가격 반올림 규칙 (KRW):**
+
+- 1-2자리: 반올림 없음
+- 3자리: 10의 자리 반올림
+- 4-5자리: 100의 자리 반올림
+- 6자리: 1000의 자리 반올림
+- 7자리 이상: 10000의 자리 반올림
+
 ### Laravel Helper
 
-You can utilize this in Laravel Blade without any need for installation:
+Laravel Blade에서 별도의 설치 없이 사용할 수 있습니다:
 
 ```blade
 {{ NFormatHelper::currency(12346) }}
 ```
 
-## Formatting
+## API 참조
 
-```sh
-composer lint
-# Modify all files to comply with the PSR-12.
+### 사용 가능한 메서드
 
-composer inspect
-# Inspect all files to ensure compliance with PSR-12.
-```
-
-## Test
-
-```sh
-composer test
-```
-
-## API Reference
-
-### Available Methods
-
-| Method                                                   | Description                                | Example                                 |
-| -------------------------------------------------------- | ------------------------------------------ | --------------------------------------- |
-| `spellOut(int $number)`                                  | Convert number to words                    | `spellOut(5)` → `오`                    |
-| `ordinalSpellOut(int $number)`                           | Convert number to ordinal (1st, 2nd, etc.) | `ordinalSpellOut(10)` → `열번째`        |
-| `currency(int\|float\|null $number, string $zero = '0')` | Format as currency                         | `currency(358762)` → `₩358,762`         |
-| `currencySpellOut(int\|float $number)`                   | Format currency with words                 | `currencySpellOut(12346)` → `12,346 원` |
-| `percent(int $number)`                                   | Convert to percentage (×100)               | `percent(12346)` → `1,234,600%`         |
-| `rawPercent(int $number)`                                | Convert to percentage (÷100)               | `rawPercent(12346)` → `12,346%`         |
-| `decimal(int\|float\|null $number, string $zero = '0')`  | Format with thousand separators            | `decimal(12346)` → `12,346`             |
-| `price(int\|float $number, ?int $roundDigits = null)`    | Round price with specified digits          | `price(12346, -2)` → `12300`            |
-| `smartPrice(int\|float $number)`                         | Intelligent rounding for shopping          | `smartPrice(12346)` → `12300`           |
+| 메서드                               | 반환타입      | 설명               | 예제                                    |
+| ------------------------------------ | ------------- | ------------------ | --------------------------------------- |
+| `spellOut(int)`                      | string        | 숫자를 단어로 변환 | `spellOut(5)` → `오`                    |
+| `ordinalSpellOut(int)`               | string        | 서수 표현 (번째)   | `ordinalSpellOut(10)` → `열번째`        |
+| `currency(int\|float\|null, string)` | string        | 통화 포맷          | `currency(358762)` → `₩358,762`         |
+| `currencySpellOut(int\|float)`       | string        | 통화 + 단어        | `currencySpellOut(12346)` → `12,346 원` |
+| `percent(int)`                       | string        | 퍼센트 (×100)      | `percent(12346)` → `1,234,600%`         |
+| `rawPercent(int)`                    | string        | 퍼센트 (÷100)      | `rawPercent(12346)` → `12,346%`         |
+| `decimal(int\|float\|null, string)`  | string        | 천단위 구분자      | `decimal(12346)` → `12,346`             |
+| `price(int\|float, ?int)`            | string\|false | 반올림             | `price(12346, -2)` → `12300`            |
+| `smartPrice(int\|float)`             | string\|false | 스마트 반올림      | `smartPrice(12346)` → `12300`           |
 
 ### Static Properties
 
-| Property    | Default   | Description                      |
-| ----------- | --------- | -------------------------------- |
-| `$locale`   | `'ko_KR'` | Default locale for formatting    |
-| `$currency` | `'KRW'`   | Default currency code (ISO 4217) |
+| 속성        | 기본값    | 설명                      |
+| ----------- | --------- | ------------------------- |
+| `$locale`   | `'ko_KR'` | 기본 로케일 설정          |
+| `$currency` | `'KRW'`   | 기본 통화 코드 (ISO 4217) |
 
-## Supported Locales
+## 지원 로케일
 
-Currently supported locales and currencies:
+현재 지원되는 로케일 및 통화:
 
-- **ko_KR** (Korean - South Korea)
-  - Currency: KRW (Korean Won)
-  - Features: Full ordinal support, currency spell out, smart price rounding
+- **ko_KR** (한국어 - 대한민국)
+  - 통화: KRW (한국 원화)
+  - 기능: 서수 지원, 통화 철자, 스마트 가격 반올림
   
-- **ja_JP** (Japanese - Japan)
-  - Currency: JPY (Japanese Yen)
-  - Features: Basic spell out support
+- **ja_JP** (일본어 - 일본)
+  - 통화: JPY (일본 엔화)
+  - 기능: 기본 spell out 지원
 
-> **Note:** You can add support for other locales by creating driver files in `src/OrdinalDriver/` and `src/CurrencyDriver/` directories.
+> **참고:** `src/OrdinalDriver/` 및 `src/CurrencyDriver/` 디렉토리에 드라이버 파일을 생성하여 다른 로케일 지원을 추가할 수 있습니다.
 
-## Contributing
+## 기여하기
 
-We welcome contributions! Please follow these steps:
+기여를 환영합니다! 다음 단계를 따라주세요:
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. 저장소를 포크합니다
+2. 기능 브랜치를 생성합니다 (`git checkout -b feature/amazing-feature`)
+3. 변경사항을 커밋합니다 (`git commit -m 'Add some amazing feature'`)
+4. 브랜치에 푸시합니다 (`git push origin feature/amazing-feature`)
+5. Pull Request를 엽니다
 
-### Development Setup
+### 개발 환경 설정
 
 ```sh
-# Install dependencies
+# 의존성 설치
 composer install
 
-# Run tests
+# 테스트 실행
 composer test
 
-# Check code style
+# 코드 스타일 검사
 composer inspect
 
-# Fix code style
+# 코드 스타일 자동 수정
 composer lint
 ```
 
-## License
+## 포맷팅
 
-The N-Format is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```sh
+composer lint
+# 모든 파일을 PSR-12에 맞게 수정합니다.
+
+composer inspect
+# 모든 파일이 PSR-12을 준수하는지 검사합니다.
+```
+
+## 테스트
+
+```sh
+composer test
+```
+
+## 라이선스
+
+N-Format은 [MIT 라이선스](https://opensource.org/licenses/MIT) 하에 오픈소스로 제공됩니다.
