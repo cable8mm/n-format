@@ -1,5 +1,14 @@
 # Release Notes
 
+## v1.3.1 - 2026-07-02
+
+### What's Changed
+
+* chore: refactor sources and revise docs. by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/10
+* docs: translate `README.md` in Korean. by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/11
+
+**Full Changelog**: https://github.com/cable8mm/n-format/compare/v1.3.0...v1.3.1
+
 ## v1.3.0 - 2025-02-25
 
 ### What's Changed
@@ -64,6 +73,7 @@ echo NFormat::rawPercent(12346);
 
 // output
 // 12,346%
+
 
 
 
