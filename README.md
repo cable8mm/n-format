@@ -56,7 +56,9 @@ print NFormat::rawPercent(12346);
 
 ```
 
-New special method `ordinalSpellOut` and `currencySpellOut`(only ko_KR):
+### Ordinal & Currency Spell Out
+
+Special methods for Korean and Japanese ordinal expressions:
 
 ```php
 print NFormat::ordinalSpellOut(10);
@@ -66,7 +68,14 @@ print NFormat::currencySpellOut(12346);
 //=> 12,346 원
 ```
 
+> **Note:** These methods currently support `ko_KR` locale with driver files. You can extend support for other locales by adding driver files.
+
+### Price Calculation
+
 You can also use `price()` and `smartPrice()` to calculate the price for customers.
+
+- `price()`: Simple rounding with specified digits
+- `smartPrice()`: Intelligent rounding based on the number of digits (useful for shopping carts)
 
 ```php
 print NFormat::price(12346, -2);

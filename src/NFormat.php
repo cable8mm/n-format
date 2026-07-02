@@ -58,12 +58,17 @@ class NFormat extends NumberFormatter
         $ordinalDriverPath = static::ORDINAL_DRIVER_PATH.static::$locale.'.php';
 
         if (file_exists($ordinalDriverPath)) {
-            $ordinalCallable = require $ordinalDriverPath;
+            try {
+                $ordinalCallable = require $ordinalDriverPath;
 
-            return $ordinalCallable($number);
+                return $ordinalCallable($number);
+            } catch (\Throwable $e) {
+                // If driver fails, return the number as string
+                return (string) $number;
+            }
         }
 
-        return $number;
+        return (string) $number;
     }
 
     /**
@@ -92,9 +97,9 @@ class NFormat extends NumberFormatter
      * @param  int  $number  Number not to be formatted.
      * @return string Spell out currency ordinal.
      *
-     * @example NFormat::spellOut(12346) => 12,346원
+     * @example NFormat::currencySpellOut(12346) => 12,346 원
      */
-    public static function currencySpellOut($number): string
+    public static function currencySpellOut(int|float $number): string
     {
         $currencySpellOut = static::create(
             static::$locale,
@@ -107,12 +112,17 @@ class NFormat extends NumberFormatter
         $currencyDriverPath = static::CURRENCY_DRIVER_PATH.static::$currency.'.php';
 
         if (file_exists($currencyDriverPath)) {
-            $currencyPatterns = require $currencyDriverPath;
+            try {
+                $currencyPatterns = require $currencyDriverPath;
 
-            if (array_key_exists('currencySpellOut', $currencyPatterns)) {
-                $currencyPattern = $currencyPatterns['currencySpellOut'];
+                if (array_key_exists('currencySpellOut', $currencyPatterns)) {
+                    $currencyPattern = $currencyPatterns['currencySpellOut'];
 
-                return preg_replace(key($currencyPattern), current($currencyPattern), $currencySpellOut);
+                    return preg_replace(key($currencyPattern), current($currencyPattern), $currencySpellOut);
+                }
+            } catch (\Throwable $e) {
+                // If driver fails, return the original formatted string
+                return $currencySpellOut;
             }
         }
 
@@ -205,6 +215,10 @@ class NFormat extends NumberFormatter
      */
     public static function smartPrice(int|float $number): string|false
     {
+        if ($number <= 0) {
+            return (string) $number;
+        }
+
         $numberOfDigits = (int) log10($number) + 1;
 
         $currencyDriverPath = static::CURRENCY_DRIVER_PATH.static::$currency.'.php';
