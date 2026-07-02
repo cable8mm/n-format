@@ -1,56 +1,64 @@
 {
-    "name": "cable8mm/n-format",
-    "description": "Small NumberFormatter Extension Library",
-    "keywords": [
-        "number-formatter",
-        "extension",
-        "n-format",
-        "tdd",
-        "php"
-    ],
-    "type": "library",
-    "require": {
-        "php": "^8.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^9.0|^10.0|^11.0",
-        "laravel/pint": "^1.0"
-    },
-    "suggest": {
-        "laravel/pint": "Provides fixing all codes for coding style"
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Sam Lee",
-            "email": "cable8mm@gmail.com",
-            "role": "Developer"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Cable8mm\\NFormat\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Cable8mm\\NFormat\\Tests\\": "tests/"
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "scripts": {
-        "test": "./vendor/bin/phpunit tests",
-        "lint": "./vendor/bin/pint",
-        "inspect": "./vendor/bin/pint --test",
-        "apidoc": "rm -rf build; rm -rf cache; doctum.phar update doctum.php --output-format=github --no-ansi --no-progress -v;",
-        "opendoc": "open build/index.html"
-    },
-    "extra": {
-        "laravel": {
-            "aliases": {
-                "NFormatHelper": "Cable8mm\\NFormat\\NFormat"
-            }
-        }
+  "name": "cable8mm/n-format",
+  "description": "PHP NumberFormatter extension library for Korean and Japanese number formatting with ordinal support, currency formatting, and smart price rounding",
+  "keywords": [
+    "number",
+    "format",
+    "korean",
+    "japanese",
+    "locale",
+    "ordinal",
+    "currency",
+    "i18n",
+    "php"
+  ],
+  "type": "library",
+  "require": {
+    "php": "^8.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.0",
+    "laravel/pint": "^1.0"
+  },
+  "suggest": {
+    "laravel/pint": "Provides fixing all codes for coding style"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sam Lee",
+      "email": "cable8mm@gmail.com",
+      "role": "Developer"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Cable8mm\\NFormat\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Cable8mm\\NFormat\\Tests\\": "tests/"
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "scripts": {
+    "test": "./vendor/bin/phpunit tests",
+    "lint": "./vendor/bin/pint",
+    "inspect": "./vendor/bin/pint --test",
+    "apidoc": "rm -rf build; rm -rf cache; doctum.phar update doctum.php --output-format=github --no-ansi --no-progress -v;",
+    "opendoc": "open build/index.html",
+    "check": [
+      "@inspect",
+      "@test"
+    ]
+  },
+  "extra": {
+    "laravel": {
+      "aliases": {
+        "NFormatHelper": "Cable8mm\\NFormat\\NFormat"
+      }
+    }
+  }
 }
