@@ -133,33 +133,41 @@ class NFormat extends NumberFormatter
     /**
      * Wrapper for NumberFormatter::format($locale, NumberFormatter::PERCENT_SYMBOL).
      *
-     * @param  int  $number  Number not to be formatted
+     * @param  int|float  $number  Number not to be formatted
      * @param  string|null  $locale  Locale override, default is NFormat::$locale.
      *
      * @example NFormat::percent(12346) => 1,234,600%
      */
-    public static function percent(int $number, ?string $locale = null): string
+    public static function percent(int|float $number, ?string $locale = null): string
     {
-        return static::create(
+        $formatter = static::create(
             $locale ?? static::$locale,
             NumberFormatter::PERCENT_SYMBOL
-        )->format((float) $number);
+        );
+
+        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
+
+        return $formatter->format($number);
     }
 
     /**
      * Wrapper for NumberFormatter::format($locale, NumberFormatter::PERCENT_SYMBOL).
      *
-     * @param  int  $number  Number not to be formatted
+     * @param  int|float  $number  Number not to be formatted
      * @param  string|null  $locale  Locale override, defaults to NFormat::$locale.
      *
      * @example NFormat::percent(12346) => 12,346%
      */
-    public static function rawPercent(int $number, ?string $locale = null): string
+    public static function rawPercent(int|float $number, ?string $locale = null): string
     {
-        return static::create(
+        $formatter = static::create(
             $locale ?? static::$locale,
             NumberFormatter::PERCENT_SYMBOL
-        )->format((float) ($number / 100));
+        );
+
+        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
+
+        return $formatter->format($number / 100);
     }
 
     /**

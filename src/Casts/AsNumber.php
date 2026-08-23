@@ -41,7 +41,11 @@ final class AsNumber implements CastsAttributes
             return null;
         }
 
-        return new Number($this->numeric($value), $this->locale);
+        $number = NumericParser::parse($value);
+
+        return is_null($number)
+            ? null
+            : new Number($number, $this->locale);
     }
 
     /**
@@ -60,32 +64,12 @@ final class AsNumber implements CastsAttributes
             return [$key => null];
         }
 
-        $number = $this->numeric($value);
+        $number = NumericParser::parse($value);
 
         if (is_null($number)) {
             return [$key => null];
         }
 
         return [$key => $number];
-    }
-
-    /**
-     * Convert the given value into a numeric value.
-     *
-     * Formatted strings such as "12,346%" or "일만이천삼백사십육" are supported.
-     */
-    protected function numeric(mixed $value): int|float|null
-    {
-        if (! is_string($value)) {
-            return is_numeric($value) ? $value + 0 : null;
-        }
-
-        $value = preg_replace('/[^0-9.+-]/', '', str_replace(',', '', $value));
-
-        if (! is_numeric($value)) {
-            return null;
-        }
-
-        return $value + 0;
     }
 }

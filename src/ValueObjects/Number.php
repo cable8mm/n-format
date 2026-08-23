@@ -73,7 +73,7 @@ final class Number implements JsonSerializable, Stringable
      */
     public function percent(): string
     {
-        return NFormat::percent((int) $this->value, $this->locale);
+        return NFormat::percent($this->value, $this->locale);
     }
 
     /**
@@ -83,7 +83,7 @@ final class Number implements JsonSerializable, Stringable
      */
     public function rawPercent(): string
     {
-        return NFormat::rawPercent((int) $this->value, $this->locale);
+        return NFormat::rawPercent($this->value, $this->locale);
     }
 
     /**

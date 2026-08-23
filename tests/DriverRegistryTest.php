@@ -97,6 +97,27 @@ class DriverRegistryTest extends TestCase
         $this->assertSame('12345700', NFormat::smartPrice(12345678));
     }
 
+    public function test_custom_driver_replaces_a_default_before_first_lookup(): void
+    {
+        $driver = new class implements CurrencyDriver
+        {
+            public function currencySpellOut(string $formatted): string
+            {
+                return 'custom_currency';
+            }
+
+            public function roundDigits(): array
+            {
+                return [1 => 0];
+            }
+        };
+
+        NFormat::registerCurrency('KRW', $driver);
+
+        $this->assertSame($driver, DriverRegistry::currency('KRW'));
+        $this->assertSame('custom_currency', NFormat::currencySpellOut(12346));
+    }
+
     public function test_custom_currency_driver_is_used_for_currency_spell_out(): void
     {
         $driver = new class implements CurrencyDriver
