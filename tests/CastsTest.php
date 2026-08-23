@@ -33,6 +33,28 @@ class CastsTest extends TestCase
         $this->assertSame('₩12,346', $product->price->currency());
     }
 
+    public function test_zero_currency_is_translated_as_free(): void
+    {
+        $product = new Product;
+
+        $product->price = 0;
+
+        $this->assertSame('무료', (string) $product->price);
+        $this->assertSame(0, $product->price->value());
+        $this->assertSame(0, $product->price->jsonSerialize());
+    }
+
+    public function test_zero_currency_uses_the_cast_locale_translation(): void
+    {
+        $product = new Product;
+
+        $product->jpy = 0;
+
+        $this->assertSame('無料', (string) $product->jpy);
+
+        $this->assertSame('Free', (string) new Money(0, 'en'));
+    }
+
     public function test_price_and_smart_price_methods_on_money(): void
     {
         $product = new Product;

@@ -89,8 +89,10 @@ In Laravel, `NFormatServiceProvider::boot()` overwrites these values from `confi
 `NFormatServiceProvider` is registered through Composer Laravel auto-discovery.
 
 - `register()` merges `config/n-format.php` under the `n-format` key.
+- `register()` loads the `n-format` translation namespace.
 - `boot()` copies configured locale and currency into `NFormat` static properties.
 - `boot()` publishes the config file with the `n-format` tag.
+- `boot()` publishes translations with the `n-format-translations` tag.
 
 The package must not require a Laravel application for core `NFormat`, driver, or value-object behavior. Keep Laravel-only dependencies and logic confined to the service provider and casts where practical.
 
@@ -102,7 +104,7 @@ The package must not require a Laravel application for core `NFormat`, driver, o
 
 `Money` is immutable and implements `Stringable` and `JsonSerializable`:
 
-- `__toString()` and `currency()` delegate to `NFormat::currency()`.
+- `__toString()` and `currency()` return the translated free label for zero, otherwise delegate to `NFormat::currency()`.
 - `price(?int)` delegates to `NFormat::price()`.
 - `smartPrice()` delegates to `NFormat::smartPrice()`.
 - `spellOut()` delegates to `NFormat::currencySpellOut()`.
