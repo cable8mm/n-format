@@ -18,6 +18,9 @@ abstract class TestCase extends Orchestra
                 $table->increments('id');
                 $table->integer('price')->nullable();
                 $table->integer('jpy')->nullable();
+                $table->integer('discount')->nullable();
+                $table->integer('count')->nullable();
+                $table->integer('rank')->nullable();
             });
         }
     }
