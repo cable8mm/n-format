@@ -46,8 +46,8 @@ class DriverRegistry
             return;
         }
 
-        self::registerOrdinal('ko_KR', new KoKrOrdinalDriver);
-        self::registerCurrency('KRW', new KrwCurrencyDriver);
+        self::$ordinalDrivers['ko_KR'] ??= new KoKrOrdinalDriver;
+        self::$currencyDrivers['KRW'] ??= new KrwCurrencyDriver;
 
         self::$initialized = true;
     }

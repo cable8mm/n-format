@@ -150,6 +150,9 @@ Blade에서도 그대로 사용할 수 있습니다.
 {{ $product->discount->percent() }}
 ```
 
+숫자·통화 캐스트는 숫자와 포맷된 숫자 문자열을 저장할 수 있습니다. `null`, 빈 문자열,
+숫자로 변환할 수 없는 값은 `null`로 저장되거나 읽힙니다.
+
 ## 드라이버 확장
 
 로케일별 서수 표현과 통화별 가격 규칙은 드라이버로 분리되어 있습니다. 다음 인터페이스를 구현한 뒤 등록하면 지원 범위를 확장할 수 있습니다.
@@ -205,8 +208,8 @@ NFormat::registerCurrency('USD', new UsdCurrencyDriver);
 | `currency(int\|float\|null, string, ?string, ?string)` | 통화 포맷 |
 | `currencySpellOut(int\|float, ?string, ?string)` | 통화와 단어를 함께 표시 |
 | `decimal(int\|float\|null, string, ?string)` | 천 단위 구분자 포맷 |
-| `percent(int, ?string)` | 100을 곱한 퍼센트 |
-| `rawPercent(int, ?string)` | 100으로 나눈 퍼센트 |
+| `percent(int\|float, ?string)` | 100을 곱한 퍼센트 |
+| `rawPercent(int\|float, ?string)` | 100으로 나눈 퍼센트 |
 | `price(int\|float, ?int)` | 지정 자릿수 반올림 |
 | `smartPrice(int\|float, ?string)` | 통화 규칙에 따른 반올림 |
 | `registerOrdinal(string, OrdinalDriver)` | 로케일 드라이버 등록 |

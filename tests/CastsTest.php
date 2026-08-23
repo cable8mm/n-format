@@ -105,6 +105,18 @@ class CastsTest extends TestCase
         $this->assertNull($product->price);
     }
 
+    public function test_invalid_values_read_as_null(): void
+    {
+        $product = new Product;
+        $product->setRawAttributes([
+            'price' => 'not a number',
+            'discount' => 'not a number',
+        ]);
+
+        $this->assertNull($product->price);
+        $this->assertNull($product->discount);
+    }
+
     public function test_config_defaults_are_applied_by_service_provider(): void
     {
         $this->assertSame('ko_KR', config('n-format.locale'));
@@ -166,6 +178,16 @@ class CastsTest extends TestCase
         $this->assertSame('1,234,600%', $product->discount->percent());
         $this->assertSame('12,346%', $product->discount->rawPercent());
         $this->assertSame(NFormat::spellOut(12346), $product->discount->spellOut());
+    }
+
+    public function test_number_percentage_helpers_preserve_floats(): void
+    {
+        $product = new Product;
+
+        $product->discount = 12.5;
+
+        $this->assertSame('1,250%', $product->discount->percent());
+        $this->assertSame('12.5%', $product->discount->rawPercent());
     }
 
     public function test_number_ordinal_spell_out(): void

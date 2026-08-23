@@ -68,8 +68,8 @@ Other important files:
 | `currency(int\|float\|null, string, ?string, ?string)` | Format currency; the second argument is the zero/null replacement string. |
 | `currencySpellOut(int\|float, ?string, ?string)` | Format currency and pass the result through a currency driver. |
 | `decimal(int\|float\|null, string, ?string)` | Format a decimal with locale separators. |
-| `percent(int, ?string)` | Format the input multiplied by 100. |
-| `rawPercent(int, ?string)` | Divide the input by 100, then format as a percentage. |
+| `percent(int\|float, ?string)` | Format the input multiplied by 100. |
+| `rawPercent(int\|float, ?string)` | Divide the input by 100, then format as a percentage. |
 | `price(int\|float, ?int)` | Round using the supplied `round()` precision. |
 | `smartPrice(int\|float, ?string)` | Apply currency-driver rounding by digit count. |
 
@@ -117,7 +117,7 @@ The package must not require a Laravel application for core `NFormat`, driver, o
 - `percent()`, `rawPercent()`, `spellOut()`, and `ordinalSpellOut()` delegate to `NFormat`.
 - `value()` and `jsonSerialize()` return the raw numeric value.
 
-Both casts preserve null and empty-string input as null. Formatted strings are normalized by removing commas and non-numeric formatting characters before storage. When changing cast behavior, test numeric input, formatted strings, nulls, value-object input, and database roundtrips.
+Both casts preserve null, empty-string, and unparseable input as null. Formatted strings are normalized by removing commas and non-numeric formatting characters before storage. When changing cast behavior, test numeric input, formatted strings, nulls, invalid values, value-object input, and database roundtrips.
 
 ## Driver architecture
 

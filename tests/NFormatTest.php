@@ -80,6 +80,8 @@ class NFormatTest extends TestCase
         $percent = NFormat::percent(12346);
 
         $this->assertEquals('1,234,600%', $percent);
+
+        $this->assertEquals('1,250%', NFormat::percent(12.5));
     }
 
     public function test_raw_percent(): void
@@ -89,6 +91,8 @@ class NFormatTest extends TestCase
         $percent = NFormat::rawPercent(12346);
 
         $this->assertEquals('12,346%', $percent);
+
+        $this->assertEquals('12.5%', NFormat::rawPercent(12.5));
     }
 
     public function test_decimal(): void
