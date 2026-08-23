@@ -122,7 +122,7 @@ composer lint          # Auto-fix code style
 - Edge cases included (0, null, various rounding, formatted-string input)
 - Eloquent cast DB roundtrip via SQLite in-memory (Orchestra Testbench)
 - Driver registry unit tests (defaults, custom registration, reset)
-- Money value object formatting (currency, price, smartPrice, JSON)
+- Money value object formatting (currency, price, smartPrice, spellOut, JSON)
 
 ## 📝 Coding Conventions
 

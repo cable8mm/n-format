@@ -42,6 +42,16 @@ class CastsTest extends TestCase
         $this->assertSame('12300', $product->price->smartPrice());
     }
 
+    public function test_money_spell_out_uses_currency_spell_out(): void
+    {
+        $product = new Product;
+
+        $product->price = 12346;
+
+        $this->assertSame('12,346 원', $product->price->spellOut());
+        $this->assertSame(NFormat::currencySpellOut(12346), $product->price->spellOut());
+    }
+
     public function test_accepts_formatted_string(): void
     {
         $product = new Product;

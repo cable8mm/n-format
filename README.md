@@ -215,6 +215,7 @@ $product->price = 12346;
 echo (string) $product->price;          // ₩12,346  (currency())
 echo $product->price->price(-2);        // 12300    (NFormat::price())
 echo $product->price->smartPrice();     // 12300    (NFormat::smartPrice())
+echo $product->price->spellOut();       // 12,346 원 (NFormat::currencySpellOut())
 echo $product->price->value();          // 12346    (원시값, 저장/계산용)
 ```
 

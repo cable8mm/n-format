@@ -11,8 +11,8 @@ use Stringable;
 /**
  * Immutable money value object returned by the AsCurrency cast.
  *
- * Echoing the object formats the value as currency, while the price() and
- * smartPrice() methods expose the rounding helpers of NFormat.
+ * Echoing the object formats the value as currency, while the price(),
+ * smartPrice(), and spellOut() methods expose the helpers of NFormat.
  */
 final class Money implements JsonSerializable, Stringable
 {
@@ -63,6 +63,16 @@ final class Money implements JsonSerializable, Stringable
     public function smartPrice(): string|false
     {
         return NFormat::smartPrice($this->value, $this->currency);
+    }
+
+    /**
+     * Spell out the amount as a currency string.
+     *
+     * @example $money->spellOut() => '12,346 원'
+     */
+    public function spellOut(): string
+    {
+        return NFormat::currencySpellOut($this->value, $this->locale, $this->currency);
     }
 
     /**
