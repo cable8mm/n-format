@@ -34,7 +34,23 @@ final class Money implements JsonSerializable, Stringable
      */
     public function __toString(): string
     {
+        if ($this->value === 0 || $this->value === 0.0) {
+            return $this->freeLabel();
+        }
+
         return NFormat::currency($this->value, '0', $this->locale, $this->currency);
+    }
+
+    /**
+     * Return the translated label for a zero amount.
+     */
+    protected function freeLabel(): string
+    {
+        if (! function_exists('trans')) {
+            return '무료';
+        }
+
+        return (string) trans('n-format::messages.free', [], $this->locale ?? NFormat::$locale);
     }
 
     /**

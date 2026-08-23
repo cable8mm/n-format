@@ -17,6 +17,8 @@ class NFormatServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/n-format.php', 'n-format');
+
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'n-format');
     }
 
     public function boot(): void
@@ -27,5 +29,9 @@ class NFormatServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/n-format.php' => config_path('n-format.php'),
         ], 'n-format');
+
+        $this->publishes([
+            __DIR__.'/../lang' => lang_path('vendor/n-format'),
+        ], 'n-format-translations');
     }
 }

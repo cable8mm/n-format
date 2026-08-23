@@ -128,6 +128,21 @@ echo $product->price->spellOut();    // 12,350 원
 echo $product->price->value();       // 12350
 ```
 
+금액이 `0`이면 통화 기호 대신 번역된 무료 문구를 표시합니다.
+
+```php
+$product->price = 0;
+echo $product->price; // 무료
+```
+
+기본 번역은 한국어 `무료`, 영어 `Free`, 일본어 `無料`이며, `AsCurrency`에 지정한 로케일을 기준으로 선택합니다. 번역 파일은 다음 명령으로 게시할 수 있습니다.
+
+```sh
+php artisan vendor:publish --tag=n-format-translations
+```
+
+번역 키는 `n-format::messages.free`입니다.
+
 `Number`는 기본적으로 천 단위 구분자를 사용해 출력합니다.
 
 ```php
@@ -150,8 +165,7 @@ Blade에서도 그대로 사용할 수 있습니다.
 {{ $product->discount->percent() }}
 ```
 
-숫자·통화 캐스트는 숫자와 포맷된 숫자 문자열을 저장할 수 있습니다. `null`, 빈 문자열,
-숫자로 변환할 수 없는 값은 `null`로 저장되거나 읽힙니다.
+숫자·통화 캐스트는 숫자와 포맷된 숫자 문자열을 저장할 수 있습니다. `null`, 빈 문자열, 숫자로 변환할 수 없는 값은 `null`로 저장되거나 읽힙니다.
 
 ## 드라이버 확장
 
@@ -201,19 +215,19 @@ NFormat::registerCurrency('USD', new UsdCurrencyDriver);
 
 ## API
 
-| 메서드 | 설명 |
-| --- | --- |
-| `spellOut(int, ?string)` | 숫자를 단어로 변환 |
-| `ordinalSpellOut(int, ?string)` | 서수 표현 |
-| `currency(int\|float\|null, string, ?string, ?string)` | 통화 포맷 |
-| `currencySpellOut(int\|float, ?string, ?string)` | 통화와 단어를 함께 표시 |
-| `decimal(int\|float\|null, string, ?string)` | 천 단위 구분자 포맷 |
-| `percent(int\|float, ?string)` | 100을 곱한 퍼센트 |
-| `rawPercent(int\|float, ?string)` | 100으로 나눈 퍼센트 |
-| `price(int\|float, ?int)` | 지정 자릿수 반올림 |
-| `smartPrice(int\|float, ?string)` | 통화 규칙에 따른 반올림 |
-| `registerOrdinal(string, OrdinalDriver)` | 로케일 드라이버 등록 |
-| `registerCurrency(string, CurrencyDriver)` | 통화 드라이버 등록 |
+| 메서드                                                 | 설명                    |
+| ------------------------------------------------------ | ----------------------- |
+| `spellOut(int, ?string)`                               | 숫자를 단어로 변환      |
+| `ordinalSpellOut(int, ?string)`                        | 서수 표현               |
+| `currency(int\|float\|null, string, ?string, ?string)` | 통화 포맷               |
+| `currencySpellOut(int\|float, ?string, ?string)`       | 통화와 단어를 함께 표시 |
+| `decimal(int\|float\|null, string, ?string)`           | 천 단위 구분자 포맷     |
+| `percent(int\|float, ?string)`                         | 100을 곱한 퍼센트       |
+| `rawPercent(int\|float, ?string)`                      | 100으로 나눈 퍼센트     |
+| `price(int\|float, ?int)`                              | 지정 자릿수 반올림      |
+| `smartPrice(int\|float, ?string)`                      | 통화 규칙에 따른 반올림 |
+| `registerOrdinal(string, OrdinalDriver)`               | 로케일 드라이버 등록    |
+| `registerCurrency(string, CurrencyDriver)`             | 통화 드라이버 등록      |
 
 ## 개발
 
