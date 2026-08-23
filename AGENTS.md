@@ -1,200 +1,147 @@
-# N-Format - AI Assistant Guide
+# AI Contribution Rules for N-Format
 
-This file is written to help AI assistants (Claude, GPT, etc.) effectively understand and work with this project.
+This file is for AI agents only. It defines repository-specific constraints and workflow rules. Do not treat it as user-facing documentation.
 
-## 📋 Project Overview
+## Source of truth
 
-**N-Format** is a PHP library that extends NumberFormatter to support number formatting for Korean (ko_KR) and Japanese (ja_JP).
+- Read `DESIGN.md` first when you need to understand the architecture, invariants, extension points, or current package behavior.
+- Read `README.md` when checking user-facing installation, configuration, and usage documentation.
+- Treat the implementation and tests as the source of truth when documentation conflicts with code.
+- Preserve unrelated user changes in the working tree. Inspect `git status` before editing and do not reset or overwrite unrelated work.
 
-- **Package Name**: cable8mm/n-format
-- **Type**: Library
-- **PHP Version**: ^8.0
-- **License**: MIT
-- **Main Features**: Number spelling, ordinal expressions, currency formatting, percentage conversion, price rounding
+## Critical repository rules
 
-## 🏗️ Project Structure
+### Never edit `CHANGELOG.md`
 
-```
-n-format/
-├── src/
-│   ├── NFormat.php                    # Main class (NumberFormatter extension)
-│   ├── NFormatServiceProvider.php     # Laravel service provider (auto-discovery)
-│   ├── Casts/
-│   │   └── AsCurrency.php              # Money value object cast (CastsAttributes)
-│   ├── ValueObjects/
-│   │   └── Money.php                   # Immutable money value object (Stringable, JsonSerializable)
-│   ├── Drivers/
-│   │   ├── DriverRegistry.php          # Static registry (lazy default boot)
-│   │   ├── Contracts/
-│   │   │   ├── OrdinalDriver.php        # Ordinal driver interface
-│   │   │   └── CurrencyDriver.php       # Currency driver interface
-│   │   ├── Ordinal/
-│   │   │   └── KoKrOrdinalDriver.php    # Korean ordinal expressions (1st, 2nd, etc.)
-│   │   └── Currency/
-│   │       └── KrwCurrencyDriver.php    # Korean Won settings (smart rounding rules)
-├── config/
-│   └── n-format.php                    # Laravel config (locale, currency defaults)
-├── tests/
-│   ├── NFormatTest.php                # PHPUnit tests (11 tests)
-│   ├── CastsTest.php                  # Eloquent cast unit + DB roundtrip tests
-│   ├── Product.php                    # Test model using every cast
-│   └── TestCase.php                   # Orchestra Testbench base test case
-├── composer.json                      # Package configuration
-├── README.md                          # User documentation
-├── phpunit.xml.dist                   # PHPUnit configuration
-├── pint.json                          # Code style configuration
-└── doctum.php                         # API documentation generation configuration
-```
+`CHANGELOG.md` is maintained automatically when GitHub Releases are created. AI agents must not modify, regenerate, reorder, or format this file during feature work, bug fixes, refactors, documentation changes, or release preparation.
 
-## 🔑 Core Classes and Methods
+If a requested change would normally require a changelog entry, leave `CHANGELOG.md` untouched and mention that the GitHub Release automation will handle it.
 
-### NFormat Class (src/NFormat.php)
+### Keep the package Laravel-compatible
 
-A static method class that extends PHP's built-in `NumberFormatter`.
+N-Format is a reusable Laravel package, not an application. Changes must work for package consumers across the supported Laravel versions.
 
-#### Main Methods
+- Keep Laravel-specific integration in the service provider, config, casts, and other explicitly Laravel-facing code.
+- Keep the core `NFormat` API and driver system usable outside a Laravel application whenever possible.
+- Do not add application-specific models, routes, controllers, migrations, commands, or environment assumptions to the package.
+- Preserve Composer Laravel auto-discovery unless there is a deliberate, documented reason to change it.
+- Keep `ext-intl` declared as a runtime Composer requirement; `NumberFormatter` is required by the package.
+- When adding Laravel support, update Composer constraints, service-provider behavior, Testbench coverage, and README usage together.
 
-| Method                               | Return Type   | Description                   | Example                                 |
-| ------------------------------------ | ------------- | ----------------------------- | --------------------------------------- |
-| `spellOut(int)`                      | string        | Convert number to words       | `spellOut(5)` → `오`                    |
-| `ordinalSpellOut(int)`               | string        | Ordinal expression (1st, 2nd) | `ordinalSpellOut(10)` → `열번째`        |
-| `currency(int\|float\|null, string)` | string        | Currency formatting           | `currency(358762)` → `₩358,762`         |
-| `currencySpellOut(int\|float)`       | string        | Currency + words              | `currencySpellOut(12346)` → `12,346 원` |
-| `percent(int)`                       | string        | Percentage (×100)             | `percent(12346)` → `1,234,600%`         |
-| `rawPercent(int)`                    | string        | Percentage (÷100)             | `rawPercent(12346)` → `12,346%`         |
-| `decimal(int\|float\|null, string)`  | string        | Thousand separators           | `decimal(12346)` → `12,346`             |
-| `price(int\|float, ?int)`            | string\|false | Rounding                      | `price(12346, -2)` → `12300`            |
-| `smartPrice(int\|float)`             | string\|false | Smart rounding                | `smartPrice(12346)` → `12300`           |
+## Change workflow
 
-#### Static Properties
+Before changing code:
 
-- `$locale` (default: `'ko_KR'`): Locale setting
-- `$currency` (default: `'KRW'`): Currency code setting
+1. Inspect `git status --short`.
+2. Read the relevant sections of `DESIGN.md` and the affected source files.
+3. Search existing tests and public API usage with `rg`.
+4. Identify whether the change affects global static state, serialization, database storage, or public signatures.
 
-### Driver Architecture
+When implementing a change:
 
-#### DriverRegistry (Driver resolution)
-- **Location**: `src/Drivers/DriverRegistry.php`
-- **Pattern**: Static registry with lazy boot of built-in drivers
-- **API**: `registerOrdinal()`, `registerCurrency()`, `ordinal()`, `currency()`, `reset()`
-- `NFormat::registerOrdinal()` / `NFormat::registerCurrency()` are registered facades
+1. Prefer a focused regression test before modifying behavior.
+2. Make the smallest compatible change that satisfies the request.
+3. Preserve strict type declarations, PHPDoc, existing naming, and PSR-12 style.
+4. Update `README.md` when public behavior, installation, configuration, or examples change.
+5. Update `DESIGN.md` when architecture, invariants, extension points, or AI-relevant constraints change.
+6. Do not update `CHANGELOG.md`.
 
-#### OrdinalDriver (Ordinal Expressions)
-- **Interface**: `src/Drivers/Contracts/OrdinalDriver.php`
-- **Contract**: `spellOut(int $number): string`
-- **Example**: `KoKrOrdinalDriver` - Unique ordinal words for 1-10 + NumberFormatter for 11+
+After changing code, run the checks appropriate to the risk. For normal source changes, run:
 
-#### CurrencyDriver (Currency Settings)
-- **Interface**: `src/Drivers/Contracts/CurrencyDriver.php`
-- **Contract**:
-  - `currencySpellOut(string $formatted): string` - pattern replacement
-  - `roundDigits(): array` - rounding rules by digit count
-- **Example**: `KrwCurrencyDriver` - Korean Won settings
-
-## 🎯 Important Design Patterns
-
-### 1. Driver Pattern
-Separate locale/currency-specific logic into external files for extensibility
-
-### 2. Static Factory Method
-Create NumberFormatter instances with `static::create()` (works in inherited classes)
-
-### 3. Graceful Degradation
-- No driver file: Default behavior (return original number)
-- Driver error: try-catch exception handling
-
-### 4. Locale-based Configuration
-Multi-language support by changing `NFormat::$locale`
-
-## 🧪 Testing
-
-### Running Tests
-```bash
-composer test          # Run all tests
-composer check         # Code inspection + tests
-composer inspect       # Code style inspection
-composer lint          # Auto-fix code style
+```sh
+composer check
+composer validate --strict
+git diff --check
 ```
 
-### Test Coverage
-- 28 tests, 83 assertions (11 original + 10 cast + 7 driver registry tests)
-- All methods tested
-- Edge cases included (0, null, various rounding, formatted-string input)
-- Eloquent cast DB roundtrip via SQLite in-memory (Orchestra Testbench)
-- Driver registry unit tests (defaults, custom registration, reset)
-- Money value object formatting (currency, price, smartPrice, spellOut, JSON)
+For documentation-only changes, at minimum run `git diff --check`. If Composer metadata or PHP behavior changed, also run the relevant Composer and PHPUnit checks.
 
-## 📝 Coding Conventions
+## Laravel package design rules
 
-### PSR-12 Compliance
-- Indentation: 4 spaces
-- Naming: camelCase (methods), snake_case (constants)
-- Type hints: Strict usage
+### Service provider
 
-### Comment Rules
-- PHPDoc blocks for all public methods
-- Include `@param`, `@return`, `@example`
-- Korean descriptions recommended
+`NFormatServiceProvider` is auto-discovered by Composer. It is responsible for:
 
-### Error Handling
-- try-catch required for file loading
-- Return default values on driver failure
-- Ensure type safety
+- merging `config/n-format.php` under the `n-format` key;
+- applying configured locale and currency defaults;
+- publishing the config file with the `n-format` tag.
 
-## 🔧 Common Tasks
+Do not require consumers to manually register the provider unless Laravel auto-discovery is intentionally changed and documented.
 
-### Adding New Locale
-1. Create a class implementing `Cable8mm\NFormat\Drivers\Contracts\OrdinalDriver`
-2. Register it with `NFormat::registerOrdinal($locale, $driver)` or `DriverRegistry::registerOrdinal()`
-3. Add tests
+### Configuration
 
-### Adding New Currency
-1. Create a class implementing `Cable8mm\NFormat\Drivers\Contracts\CurrencyDriver`
-2. Implement `currencySpellOut()` patterns and `roundDigits()` rules
-3. Register it with `NFormat::registerCurrency($currency, $driver)` or `DriverRegistry::registerCurrency()`
-4. Add tests
+Keep configuration in `config/n-format.php`. The current defaults are:
 
-### Bug Fixes
-1. Write failing test first (TDD)
-2. Fix code
-3. Verify all tests pass with `composer test`
-4. Check code style with `composer inspect`
+```php
+'locale' => 'ko_KR',
+'currency' => 'KRW',
+```
 
-## ⚠️ Important Notes
+Use config values for package defaults, while preserving explicit method arguments as higher-priority overrides.
 
-### Don'ts
-1. **Minimize static state changes**: `$locale`, `$currency` are global state
-2. **Be careful modifying driver classes**: `KrwCurrencyDriver`, `KoKrOrdinalDriver`, etc.
-3. **Breaking changes**: Follow SemVer when changing public API
-4. **Never omit type hints**: Utilize PHP 8.0+ features
+### Eloquent casts and value objects
 
-### Required Checks
-1. All tests must pass
-2. PSR-12 code style compliance
-3. DocBlock required
-4. Example code accuracy verification
+- `AsCurrency` reads as `Money` and writes a raw numeric value.
+- `AsNumber` reads as `Number` and writes a raw numeric value.
+- Formatted strings, nulls, empty strings, and value-object input must remain covered by tests.
+- `Money` and `Number` are immutable `Stringable` and `JsonSerializable` value objects.
+- String conversion is for presentation; JSON serialization is the raw numeric value.
+- Never store currency symbols, percentage signs, locale separators, or formatted labels in the database.
 
-## 📚 Reference Materials
+## API and compatibility constraints
 
-- [PHP NumberFormatter](https://www.php.net/manual/en/class.numberformatter.php)
-- [PSR-12 Coding Style](https://www.php-fig.org/psr/psr-12/)
-- [Composer Schema](https://getcomposer.org/doc/04-schema.md)
-- [Laravel Pint](https://github.com/laravel/pint)
+- Do not break public method signatures, parameter order, defaults, return types, namespaces, or Composer package identity without explicit user approval.
+- `NFormat::$locale` and `NFormat::$currency` are global static state. Avoid introducing more global state.
+- Restore static state in tests so test order does not affect results.
+- Locale-specific and currency-specific rules belong in drivers implementing the existing contracts.
+- Do not add locale-specific conditionals directly to `NFormat` when a driver can express the behavior.
+- Preserve fallback behavior for missing drivers unless a behavior change is explicitly requested.
+- Keep `ext-intl` available in development and CI environments.
 
-## 🐛 Known Issues
+## Adding a locale or currency
 
-1. `smartPrice()` only handles positive numbers (returns string for 0 or below)
-2. `currencySpellOut()` uses EXPONENTIAL_SYMBOL style (temporary workaround)
-3. `ordinalSpellOut()` return type is string, but returns original number when no driver exists
+For a new ordinal locale:
 
-## 💡 Improvement Suggestions
+1. Implement `Drivers\Contracts\OrdinalDriver`.
+2. Register it through `NFormat::registerOrdinal()` or `DriverRegistry::registerOrdinal()`.
+3. Add focused tests for normal, boundary, and fallback behavior.
+4. Document the supported locale in `README.md` if it is public package functionality.
 
-1. **Caching**: `static::create()` called every time → instance caching
-2. **Logging**: Add logs when driver loading fails
-3. **Type Safety**: Explicit return type for `currencySpellOut()`
-4. **Test Coverage**: Add edge cases (negative numbers, very large numbers)
-5. **Performance**: Optimize NumberFormatter instance reuse
+For a new currency:
 
----
+1. Implement `Drivers\Contracts\CurrencyDriver`.
+2. Define `currencySpellOut()` and `roundDigits()`.
+3. Register it through `NFormat::registerCurrency()` or `DriverRegistry::registerCurrency()`.
+4. Add tests for formatting and every relevant smart-rounding digit range.
+5. Document the supported currency in `README.md` if it is public package functionality.
 
-This file is for AI assistants to understand and work with this project.
+Do not modify built-in driver behavior casually; it can change localized output and pricing semantics.
+
+## Testing expectations
+
+Tests use PHPUnit and Orchestra Testbench. Maintain coverage for:
+
+- all public `NFormat` helpers;
+- default and custom driver registration;
+- registry reset and lazy default boot;
+- service-provider configuration;
+- Eloquent cast read/write behavior;
+- SQLite in-memory database roundtrips;
+- immutable value-object behavior and JSON serialization;
+- null, zero, formatted-string, negative, and boundary inputs where applicable.
+
+Use the existing test conventions and fixtures. Do not introduce network calls or external services into the test suite.
+
+## Documentation rules
+
+- `README.md` is user-facing and should contain practical Laravel installation and usage examples.
+- `DESIGN.md` is AI-facing and should contain architecture and maintenance context, not duplicate the full README.
+- `CHANGELOG.md` is release automation output and must never be edited by AI.
+- Keep examples executable or consistent with the actual public API.
+- If a change affects a public method, config key, cast, driver contract, or supported runtime, update the appropriate documentation except `CHANGELOG.md`.
+
+## Safety and handoff
+
+- Never run destructive commands such as `git reset --hard`, `git checkout --`, or broad recursive deletion unless the user explicitly requests the exact operation.
+- Do not commit, tag, push, create releases, or alter external systems unless explicitly requested.
+- At handoff, report changed files, verification commands, and any remaining limitation.
