@@ -1,6 +1,6 @@
 {
   "name": "cable8mm/n-format",
-  "description": "PHP NumberFormatter extension library for Korean and Japanese number formatting with ordinal support, currency formatting, and smart price rounding",
+  "description": "Laravel package for Korean and Japanese number formatting with Eloquent casts, value objects, ordinal support, currency formatting, and smart price rounding",
   "keywords": [
     "number",
     "format",
@@ -15,6 +15,7 @@
   "type": "library",
   "require": {
     "php": "^8.2",
+    "ext-intl": "*",
     "illuminate/contracts": "^12.0|^13.0",
     "illuminate/database": "^12.0|^13.0"
   },
