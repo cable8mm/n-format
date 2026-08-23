@@ -73,7 +73,61 @@ print NFormat::currencySpellOut(12346);
 //=> 12,346 원
 ```
 
-> **참고:** 이 메서드들은 현재 드라이버 파일이 있는 `ko_KR` 로케일만 지원합니다. 드라이버 파일을 추가하여 다른 로케일 지원을 확장할 수 있습니다.
+> **참고:** 이 메서드들은 현재 드라이버가 등록된 `ko_KR` 로케일만 지원합니다. 인터페이스를 구현한 드라이버를 등록하여 다른 로케일/통화 지원을 확장할 수 있습니다.
+
+### 사용자 정의 드라이버
+
+`src/Drivers/Contracts/` 아래 인터페이스를 구현한 클래스를
+`NFormat::registerOrdinal()` / `NFormat::registerCurrency()`로 등록하여
+서수 표현과 통화 규칙을 확장할 수 있습니다:
+
+```php
+use Cable8mm\NFormat\Drivers\Contracts\OrdinalDriver;
+
+class EnUsOrdinalDriver implements OrdinalDriver
+{
+    public function spellOut(int $number): string
+    {
+        return match ($number) {
+            1 => 'first',
+            2 => 'second',
+            default => $number.'th',
+        };
+    }
+}
+
+NFormat::registerOrdinal('en_US', new EnUsOrdinalDriver);
+
+print NFormat::ordinalSpellOut(2, 'en_US'); // second
+```
+
+```php
+use Cable8mm\NFormat\Drivers\Contracts\CurrencyDriver;
+
+class UsdCurrencyDriver implements CurrencyDriver
+{
+    public function currencySpellOut(string $formatted): string
+    {
+        return $formatted.' dollars';
+    }
+
+    public function roundDigits(): array
+    {
+        return [
+            3 => -1,
+            4 => -2,
+            5 => -2,
+        ];
+    }
+}
+
+NFormat::registerCurrency('USD', new UsdCurrencyDriver);
+
+NFormat::$currency = 'USD';
+print NFormat::smartPrice(12346); // 12300
+```
+
+드라이버가 등록되지 않은 로케일/통화를 요청하면 기본 원본 문자열을 반환합니다.
 
 ### 가격 계산
 
@@ -121,6 +175,74 @@ Laravel Blade에서 별도의 설치 없이 사용할 수 있습니다:
 {{ NFormatHelper::currency(12346) }}
 ```
 
+### Laravel Eloquent Casts
+
+Laravel 12 및 Laravel 13 패키지로 제공되며, 서비스 프로바이더가 자동 등록되어
+앱의 설정을 `NFormat::$locale`과 `NFormat::$currency`에 반영합니다. 설정 파일을
+게시하려면:
+
+```sh
+php artisan vendor:publish --tag=n-format
+```
+
+`src/Casts/` 디렉터리에는 Eloquent 모델의 `$casts` 속성에 사용할 수 있는
+`CastsAttributes` 캐스트 클래스가 포함되어 있습니다. 읽을 때는 포맷된 문자열을,
+쓸 때는 정제된 숫자를 DB에 저장합니다:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Cable8mm\NFormat\Casts\CurrencyCast;
+use Cable8mm\NFormat\Casts\PriceCast;
+use Cable8mm\NFormat\Casts\SmartPriceCast;
+
+class Product extends Model
+{
+    protected function casts(): array
+    {
+        return [
+            'price'        => CurrencyCast::class,              // ₩12,346
+            'smart_price'  => SmartPriceCast::class,            // 12300
+            'rounded'      => PriceCast::class.':-2',           // 12300
+            'jpy'          => CurrencyCast::class.':ja_JP,JPY', // ￥12,345
+        ];
+    }
+}
+```
+
+```php
+$product = new Product;
+$product->price = 12346;
+
+echo $product->price; // ₩12,346
+echo $product->getRawOriginal('price'); // 12346
+```
+
+포맷된 문자열을 속성에 할당하면 통화 기호와 구분자를 제거한 뒤 숫자로 변환하여
+저장합니다:
+
+```php
+$product->price = '₩12,350원';
+
+echo $product->price; // ₩12,350
+```
+
+각 식별자는 콜론 뒤에 인자를 전달하여 로케일 / 통화를 지정할 수 있습니다
+(예: `CurrencyCast::class.':ja_JP,JPY'`). 인자를 생략하면 config 또는
+`NFormat::$locale` / `NFormat::$currency` 기본값을 사용합니다.
+
+#### 캐스트 목록
+
+| 캐스트             | NFormat 메서드    | 설명                       |
+| ------------------ | ----------------- | -------------------------- |
+| `CurrencyCast`     | `currency()`      | 통화 포맷 예를 들어 `₩12,346` |
+| `PriceCast`        | `price()`         | 지정된 자릿수 반올림          |
+| `SmartPriceCast`   | `smartPrice()`    | 스마트 반올림                |
+| `DecimalCast`      | `decimal()`       | 천단위 구분자 포맷            |
+| `PercentCast`      | `percent()`       | 퍼센트 (×100)               |
+| `RawPercentCast`   | `rawPercent()`    | 퍼센트 (÷100)               |
+| `SpellOutCast`     | `spellOut()`      | 숫자를 단어로 변환            |
+| `OrdinalCast`      | `ordinalSpellOut()` | 서수 표현                  |
+
 ## API 참조
 
 ### 사용 가능한 메서드
@@ -156,7 +278,7 @@ Laravel Blade에서 별도의 설치 없이 사용할 수 있습니다:
   - 통화: JPY (일본 엔화)
   - 기능: 기본 spell out 지원
 
-> **참고:** `src/OrdinalDriver/` 및 `src/CurrencyDriver/` 디렉토리에 드라이버 파일을 생성하여 다른 로케일 지원을 추가할 수 있습니다.
+> **참고:** `Cable8mm\NFormat\Drivers\Contracts\OrdinalDriver` 및 `Cable8mm\NFormat\Drivers\Contracts\CurrencyDriver` 인터페이스를 구현한 드라이버 클래스를 [사용자 정의 드라이버](#사용자-정의-드라이버)와 같이 등록하여 다른 로케일/통화 지원을 추가할 수 있습니다.
 
 ## 기여하기
 
