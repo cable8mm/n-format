@@ -4,26 +4,31 @@ declare(strict_types=1);
 
 namespace Cable8mm\NFormat\Casts;
 
+use Cable8mm\NFormat\ValueObjects\Money;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Base class for all NFormat eloquent casts.
+ * Casts a model attribute to a Money value object.
  *
- * Reading an attribute returns the formatted value while writing always stores
- * the plain numeric value so that the database stays quantitative.
+ * Reading an attribute returns a Money instance that formats through
+ * NFormat, while writing always stores the plain numeric value so that
+ * the database stays quantitative.
+ *
+ * @example Product::$casts => ['price' => AsCurrency::class]
+ * @example Product::$casts => ['price' => AsCurrency::class.':ja_JP,JPY']
  */
-abstract class NumberCast implements CastsAttributes
+final class AsCurrency implements CastsAttributes
 {
     /**
-     * Locale override, falls back to NFormat::$locale.
+     * The locale override, falls back to NFormat::$locale.
      */
-    protected ?string $locale = null;
+    protected ?string $locale;
 
     /**
-     * ISO 4217 currency code override, falls back to NFormat::$currency.
+     * The ISO 4217 currency code override, falls back to NFormat::$currency.
      */
-    protected ?string $currency = null;
+    protected ?string $currency;
 
     public function __construct(?string $locale = null, ?string $currency = null)
     {
@@ -36,13 +41,13 @@ abstract class NumberCast implements CastsAttributes
      *
      * @param  array<string, mixed>  $attributes
      */
-    public function get(Model $model, string $key, mixed $value, array $attributes): mixed
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?Money
     {
         if (is_null($value) || $value === '') {
             return null;
         }
 
-        return $this->format($value);
+        return new Money($this->numeric($value), $this->locale, $this->currency);
     }
 
     /**
@@ -53,11 +58,15 @@ abstract class NumberCast implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): array
     {
+        if ($value instanceof Money) {
+            return [$key => $value->value()];
+        }
+
         if (is_null($value) || $value === '') {
             return [$key => null];
         }
 
-        $number = $this->normalize($value);
+        $number = $this->numeric($value);
 
         if (is_null($number)) {
             return [$key => null];
@@ -71,7 +80,7 @@ abstract class NumberCast implements CastsAttributes
      *
      * Formatted strings such as "₩12,350" or "12,346 원" are supported.
      */
-    protected function normalize(mixed $value): int|float|null
+    protected function numeric(mixed $value): int|float|null
     {
         if (! is_string($value)) {
             return is_numeric($value) ? $value + 0 : null;
@@ -85,17 +94,4 @@ abstract class NumberCast implements CastsAttributes
 
         return $value + 0;
     }
-
-    /**
-     * Convert the given value into a numeric value for formatting.
-     */
-    protected function numeric(mixed $value): int|float
-    {
-        return is_numeric($value) ? $value + 0 : 0;
-    }
-
-    /**
-     * Convert the given numeric value into the formatted value.
-     */
-    abstract protected function format(mixed $value): string;
 }

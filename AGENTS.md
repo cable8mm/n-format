@@ -20,15 +20,9 @@ n-format/
 │   ├── NFormat.php                    # Main class (NumberFormatter extension)
 │   ├── NFormatServiceProvider.php     # Laravel service provider (auto-discovery)
 │   ├── Casts/
-│   │   ├── NumberCast.php             # Abstract base CastsAttributes implementation
-│   │   ├── CurrencyCast.php           # ₩12,346 style currency formatting
-│   │   ├── PriceCast.php              # Rounded price (round digits argument)
-│   │   ├── SmartPriceCast.php          # Smart rounding for shopping carts
-│   │   ├── DecimalCast.php             # Thousand separators
-│   │   ├── PercentCast.php             # Percentage (×100)
-│   │   ├── RawPercentCast.php          # Percentage (÷100)
-│   │   ├── SpellOutCast.php            # Number to words
-│   │   └── OrdinalCast.php             # Ordinal expressions (1st, 2nd)
+│   │   └── AsCurrency.php              # Money value object cast (CastsAttributes)
+│   ├── ValueObjects/
+│   │   └── Money.php                   # Immutable money value object (Stringable, JsonSerializable)
 │   ├── Drivers/
 │   │   ├── DriverRegistry.php          # Static registry (lazy default boot)
 │   │   ├── Contracts/
@@ -123,11 +117,12 @@ composer lint          # Auto-fix code style
 ```
 
 ### Test Coverage
-- 31 tests, 85 assertions (11 original + 13 cast + 7 driver registry tests)
+- 28 tests, 83 assertions (11 original + 10 cast + 7 driver registry tests)
 - All methods tested
 - Edge cases included (0, null, various rounding, formatted-string input)
 - Eloquent cast DB roundtrip via SQLite in-memory (Orchestra Testbench)
 - Driver registry unit tests (defaults, custom registration, reset)
+- Money value object formatting (currency, price, smartPrice, JSON)
 
 ## 📝 Coding Conventions
 

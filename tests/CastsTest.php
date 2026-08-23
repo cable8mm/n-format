@@ -1,109 +1,84 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cable8mm\NFormat\Tests;
 
+use Cable8mm\NFormat\Casts\AsCurrency;
 use Cable8mm\NFormat\NFormat;
+use Cable8mm\NFormat\ValueObjects\Money;
 
 class CastsTest extends TestCase
 {
-    public function test_currency_cast_formats_and_stores_raw_number(): void
+    public function test_cast_stores_raw_number_and_returns_money(): void
     {
         $product = new Product;
 
         $product->price = 12346;
 
         $this->assertSame(12346, $product->getAttributes()['price']);
-        $this->assertSame('₩12,346', $product->price);
+        $this->assertInstanceOf(Money::class, $product->price);
+        $this->assertSame('₩12,346', (string) $product->price);
+        $this->assertSame('₩12,346', $product->price->currency());
     }
 
-    public function test_currency_cast_accepts_formatted_string(): void
+    public function test_currency_is_default_get_behavior(): void
+    {
+        $product = new Product;
+
+        $product->price = 12346;
+
+        $this->assertSame('₩12,346', (string) $product->price);
+        $this->assertSame('₩12,346', $product->price->currency());
+    }
+
+    public function test_price_and_smart_price_methods_on_money(): void
+    {
+        $product = new Product;
+
+        $product->price = 12346;
+
+        $this->assertSame('12300', $product->price->price(-2));
+        $this->assertSame('12300', $product->price->smartPrice());
+    }
+
+    public function test_accepts_formatted_string(): void
     {
         $product = new Product;
 
         $product->price = '₩12,350원';
 
         $this->assertSame(12350, $product->getAttributes()['price']);
-        $this->assertSame('₩12,350', $product->price);
+        $this->assertSame('₩12,350', (string) $product->price);
     }
 
-    public function test_currency_cast_with_locale_and_currency(): void
+    public function test_cast_with_locale_and_currency(): void
     {
         $product = new Product;
 
         $product->jpy = 12345;
 
         // Note: the Japanese locale renders the full-width yen sign (￥).
-        $this->assertSame('￥12,345', $product->jpy);
+        $this->assertInstanceOf(Money::class, $product->jpy);
+        $this->assertSame('￥12,345', (string) $product->jpy);
 
         $product->jpy = '￥12,345';
 
         $this->assertSame(12345, $product->getAttributes()['jpy']);
-        $this->assertSame('￥12,345', $product->jpy);
+        $this->assertSame('￥12,345', (string) $product->jpy);
     }
 
-    public function test_price_cast_rounds_the_number(): void
+    public function test_money_value_object_is_immutable_and_json_serializes_raw(): void
     {
         $product = new Product;
 
-        $product->rounded = 12346;
+        $product->price = 12346;
 
-        $this->assertSame('12300', $product->rounded);
-        $this->assertSame(12346, $product->getAttributes()['rounded']);
-    }
+        $money = $product->price;
 
-    public function test_smart_price_cast(): void
-    {
-        $product = new Product;
-
-        $product->smart_price = 1234678;
-
-        $this->assertSame('1230000', $product->smart_price);
-        $this->assertSame(1234678, $product->getAttributes()['smart_price']);
-    }
-
-    public function test_decimal_cast(): void
-    {
-        $product = new Product;
-
-        $product->decimal_price = 12346;
-
-        $this->assertSame('12,346', $product->decimal_price);
-    }
-
-    public function test_percent_cast(): void
-    {
-        $product = new Product;
-
-        $product->discount = 10;
-
-        $this->assertSame('1,000%', $product->discount);
-    }
-
-    public function test_raw_percent_cast(): void
-    {
-        $product = new Product;
-
-        $product->raw_discount = 12346;
-
-        $this->assertSame('12,346%', $product->raw_discount);
-    }
-
-    public function test_spell_out_cast(): void
-    {
-        $product = new Product;
-
-        $product->count = 5;
-
-        $this->assertSame('오', $product->count);
-    }
-
-    public function test_ordinal_cast(): void
-    {
-        $product = new Product;
-
-        $product->rank = 10;
-
-        $this->assertSame('열번째', $product->rank);
+        $this->assertSame(12346, $money->value());
+        $this->assertSame(12346, $money->jsonSerialize());
+        $this->assertSame('{"price":12346}', $product->toJson());
     }
 
     public function test_null_values_are_preserved(): void
@@ -131,32 +106,31 @@ class CastsTest extends TestCase
     {
         $product = Product::create([
             'price' => 12346,
-            'smart_price' => 1234678,
-            'decimal_price' => 12346,
-            'rounded' => 12346,
-            'discount' => 10,
-            'raw_discount' => 12346,
-            'count' => 5,
-            'rank' => 10,
             'jpy' => 12345,
         ]);
 
-        $this->assertSame('₩12,346', $product->price);
+        $this->assertSame('₩12,346', (string) $product->price);
         $this->assertSame(12346, $product->getRawOriginal('price'));
 
         $fresh = $product->fresh();
 
-        $this->assertSame('₩12,346', $fresh->price);
-        $this->assertSame('1230000', $fresh->smart_price);
-        $this->assertSame('12,346', $fresh->decimal_price);
-        $this->assertSame('12300', $fresh->rounded);
-        $this->assertSame('1,000%', $fresh->discount);
-        $this->assertSame('12,346%', $fresh->raw_discount);
-        $this->assertSame('오', $fresh->count);
-        $this->assertSame('열번째', $fresh->rank);
-        $this->assertSame('￥12,345', $fresh->jpy);
+        $this->assertInstanceOf(Money::class, $fresh->price);
+        $this->assertSame('₩12,346', (string) $fresh->price);
+        $this->assertSame('12300', $fresh->price->price(-2));
+        $this->assertSame('12300', $fresh->price->smartPrice());
+        $this->assertSame('￥12,345', (string) $fresh->jpy);
 
         $this->assertSame(1, Product::where('price', 12346)->count());
         $this->assertSame(1, Product::where('jpy', 12345)->count());
+    }
+
+    public function test_as_currency_class_is_configurable_via_constructor(): void
+    {
+        $cast = new AsCurrency('ja_JP', 'JPY');
+
+        $product = new Product;
+        $product->jpy = 1000;
+
+        $this->assertSame('￥1,000', (string) $product->jpy);
     }
 }

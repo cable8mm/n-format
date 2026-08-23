@@ -17,13 +17,6 @@ abstract class TestCase extends Orchestra
             Schema::create('products', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('price')->nullable();
-                $table->integer('smart_price')->nullable();
-                $table->integer('decimal_price')->nullable();
-                $table->integer('rounded')->nullable();
-                $table->integer('discount')->nullable();
-                $table->integer('raw_discount')->nullable();
-                $table->integer('count')->nullable();
-                $table->integer('rank')->nullable();
                 $table->integer('jpy')->nullable();
             });
         }
