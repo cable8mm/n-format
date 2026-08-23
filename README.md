@@ -73,7 +73,61 @@ print NFormat::currencySpellOut(12346);
 //=> 12,346 원
 ```
 
-> **참고:** 이 메서드들은 현재 드라이버 파일이 있는 `ko_KR` 로케일만 지원합니다. 드라이버 파일을 추가하여 다른 로케일 지원을 확장할 수 있습니다.
+> **참고:** 이 메서드들은 현재 드라이버가 등록된 `ko_KR` 로케일만 지원합니다. 인터페이스를 구현한 드라이버를 등록하여 다른 로케일/통화 지원을 확장할 수 있습니다.
+
+### 사용자 정의 드라이버
+
+`src/Drivers/Contracts/` 아래 인터페이스를 구현한 클래스를
+`NFormat::registerOrdinal()` / `NFormat::registerCurrency()`로 등록하여
+서수 표현과 통화 규칙을 확장할 수 있습니다:
+
+```php
+use Cable8mm\NFormat\Drivers\Contracts\OrdinalDriver;
+
+class EnUsOrdinalDriver implements OrdinalDriver
+{
+    public function spellOut(int $number): string
+    {
+        return match ($number) {
+            1 => 'first',
+            2 => 'second',
+            default => $number.'th',
+        };
+    }
+}
+
+NFormat::registerOrdinal('en_US', new EnUsOrdinalDriver);
+
+print NFormat::ordinalSpellOut(2, 'en_US'); // second
+```
+
+```php
+use Cable8mm\NFormat\Drivers\Contracts\CurrencyDriver;
+
+class UsdCurrencyDriver implements CurrencyDriver
+{
+    public function currencySpellOut(string $formatted): string
+    {
+        return $formatted.' dollars';
+    }
+
+    public function roundDigits(): array
+    {
+        return [
+            3 => -1,
+            4 => -2,
+            5 => -2,
+        ];
+    }
+}
+
+NFormat::registerCurrency('USD', new UsdCurrencyDriver);
+
+NFormat::$currency = 'USD';
+print NFormat::smartPrice(12346); // 12300
+```
+
+드라이버가 등록되지 않은 로케일/통화를 요청하면 기본 원본 문자열을 반환합니다.
 
 ### 가격 계산
 
@@ -121,6 +175,107 @@ Laravel Blade에서 별도의 설치 없이 사용할 수 있습니다:
 {{ NFormatHelper::currency(12346) }}
 ```
 
+### Laravel Eloquent Casts
+
+Laravel 12 및 Laravel 13 패키지로 제공되며, 서비스 프로바이더가 자동 등록되어
+앱의 설정을 `NFormat::$locale`과 `NFormat::$currency`에 반영합니다. 설정 파일을
+게시하려면:
+
+```sh
+php artisan vendor:publish --tag=n-format
+```
+
+Laravel 12 및 Laravel 13 패키지로 제공되며, 서비스 프로바이더가 자동 등록되어
+앱의 설정을 `NFormat::$locale`과 `NFormat::$currency`에 반영합니다. 설정 파일을
+게시하려면:
+
+```sh
+php artisan vendor:publish --tag=n-format
+```
+
+두 개의 커스텀 캐스트가 제공됩니다 (Value Object Casting 패턴):
+
+- `Cable8mm\NFormat\Casts\AsCurrency` — 속성을 `Money` 값 객체로
+- `Cable8mm\NFormat\Casts\AsNumber` — 속성을 `Number` 값 객체로
+
+읽을 때는 값 객체를, 쓸 때는 정제된 숫자를 DB에 저장합니다:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Cable8mm\NFormat\Casts\AsCurrency;
+use Cable8mm\NFormat\Casts\AsNumber;
+
+class Product extends Model
+{
+    protected function casts(): array
+    {
+        return [
+            'price'    => AsCurrency::class,                  // ko_KR / KRW
+            'jpy'      => AsCurrency::class.':ja_JP,JPY',   // 컬럼별 로케일/통화
+            'discount' => AsNumber::class,                    // decimal 기본
+            'count'    => AsNumber::class.':ja_JP',          // 로케일 지정
+        ];
+    }
+}
+```
+
+`$product->price`는 `Cable8mm\NFormat\ValueObjects\Money` 인스턴스입니다. echo하거나
+Blade에서 출력하면 기본적으로 `NFormat::currency()` 포맷이 적용됩니다.
+
+```php
+$product = new Product;
+$product->price = 12346;
+
+echo (string) $product->price;          // ₩12,346  (currency())
+echo $product->price->price(-2);        // 12300    (NFormat::price())
+echo $product->price->smartPrice();     // 12300    (NFormat::smartPrice())
+echo $product->price->spellOut();       // 12,346 원 (NFormat::currencySpellOut())
+echo $product->price->value();          // 12346    (원시값, 저장/계산용)
+```
+
+```blade
+{{ $item->price }}                     {{-- ₩12,346 --}}
+{{ $item->price->price(-2) }}          {{-- 12300 --}}
+{{ $item->price->smartPrice() }}       {{-- 12300 --}}
+```
+
+포맷된 문자열을 속성에 할당하면 통화 기호와 구분자를 제거한 뒤 숫자로 변환하여
+저장합니다:
+
+```php
+$product->price = '₩12,350원';
+
+echo (string) $product->price; // ₩12,350
+```
+
+각 식별자는 콜론 뒤에 인자를 전달하여 로케일 / 통화를 지정할 수 있습니다
+(예: `AsCurrency::class.':ja_JP,JPY'`). 인자를 생략하면 config 또는
+`NFormat::$locale` / `NFormat::$currency` 기본값을 사용합니다.
+
+`Money` 값 객체는 **불변(immutable)** 이며 JSON 직렬화 시 원시 숫자를 반환하므로
+계산·비교·API 응답에 안전합니다.
+
+`AsNumber` 캐스트는 `Cable8mm\NFormat\ValueObjects\Number` 값을 반환합니다.
+`__toString()`은 `NFormat::decimal()`(천단위 구분자)을, 나머지 메서드는
+AsCurrency에서 사용하지 않는 NFormat 헬퍼를 노출합니다:
+
+```php
+$product->discount = 12346;
+
+echo (string) $product->discount;            // 12,346      (decimal())
+echo $product->discount->decimal();          // 12,346      (NFormat::decimal())
+echo $product->discount->percent();          // 1,234,600%  (NFormat::percent())
+echo $product->discount->rawPercent();       // 12,346%     (NFormat::rawPercent())
+echo $product->discount->spellOut();         // 일만이천삼백사십육 (NFormat::spellOut())
+echo $product->discount->ordinalSpellOut();  // 열번째      (NFormat::ordinalSpellOut())
+echo $product->discount->value();            // 10          (원시값, 저장/계산용)
+```
+
+```blade
+{{ $item->discount }}                 {{-- 10 --}}
+{{ $item->discount->percent() }}      {{-- 1,000% --}}
+```
+
 ## API 참조
 
 ### 사용 가능한 메서드
@@ -156,7 +311,7 @@ Laravel Blade에서 별도의 설치 없이 사용할 수 있습니다:
   - 통화: JPY (일본 엔화)
   - 기능: 기본 spell out 지원
 
-> **참고:** `src/OrdinalDriver/` 및 `src/CurrencyDriver/` 디렉토리에 드라이버 파일을 생성하여 다른 로케일 지원을 추가할 수 있습니다.
+> **참고:** `Cable8mm\NFormat\Drivers\Contracts\OrdinalDriver` 및 `Cable8mm\NFormat\Drivers\Contracts\CurrencyDriver` 인터페이스를 구현한 드라이버 클래스를 [사용자 정의 드라이버](#사용자-정의-드라이버)와 같이 등록하여 다른 로케일/통화 지원을 추가할 수 있습니다.
 
 ## 기여하기
 

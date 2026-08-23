@@ -18,12 +18,27 @@ This file is written to help AI assistants (Claude, GPT, etc.) effectively under
 n-format/
 ├── src/
 │   ├── NFormat.php                    # Main class (NumberFormatter extension)
-│   ├── CurrencyDriver/
-│   │   └── KRW.php                    # Korean Won settings (smart rounding rules)
-│   └── OrdinalDriver/
-│       └── ko_KR.php                  # Korean ordinal expressions (1st, 2nd, etc.)
+│   ├── NFormatServiceProvider.php     # Laravel service provider (auto-discovery)
+│   ├── Casts/
+│   │   └── AsCurrency.php              # Money value object cast (CastsAttributes)
+│   ├── ValueObjects/
+│   │   └── Money.php                   # Immutable money value object (Stringable, JsonSerializable)
+│   ├── Drivers/
+│   │   ├── DriverRegistry.php          # Static registry (lazy default boot)
+│   │   ├── Contracts/
+│   │   │   ├── OrdinalDriver.php        # Ordinal driver interface
+│   │   │   └── CurrencyDriver.php       # Currency driver interface
+│   │   ├── Ordinal/
+│   │   │   └── KoKrOrdinalDriver.php    # Korean ordinal expressions (1st, 2nd, etc.)
+│   │   └── Currency/
+│   │       └── KrwCurrencyDriver.php    # Korean Won settings (smart rounding rules)
+├── config/
+│   └── n-format.php                    # Laravel config (locale, currency defaults)
 ├── tests/
-│   └── NFormatTest.php                # PHPUnit tests (11 tests)
+│   ├── NFormatTest.php                # PHPUnit tests (11 tests)
+│   ├── CastsTest.php                  # Eloquent cast unit + DB roundtrip tests
+│   ├── Product.php                    # Test model using every cast
+│   └── TestCase.php                   # Orchestra Testbench base test case
 ├── composer.json                      # Package configuration
 ├── README.md                          # User documentation
 ├── phpunit.xml.dist                   # PHPUnit configuration
@@ -56,19 +71,25 @@ A static method class that extends PHP's built-in `NumberFormatter`.
 - `$locale` (default: `'ko_KR'`): Locale setting
 - `$currency` (default: `'KRW'`): Currency code setting
 
-### Driver File Structure
+### Driver Architecture
+
+#### DriverRegistry (Driver resolution)
+- **Location**: `src/Drivers/DriverRegistry.php`
+- **Pattern**: Static registry with lazy boot of built-in drivers
+- **API**: `registerOrdinal()`, `registerCurrency()`, `ordinal()`, `currency()`, `reset()`
+- `NFormat::registerOrdinal()` / `NFormat::registerCurrency()` are registered facades
 
 #### OrdinalDriver (Ordinal Expressions)
-- **Location**: `src/OrdinalDriver/{locale}.php`
-- **Format**: Returns Closure
-- **Example**: `ko_KR.php` - Unique ordinal words for 1-10 + NumberFormatter for 11+
+- **Interface**: `src/Drivers/Contracts/OrdinalDriver.php`
+- **Contract**: `spellOut(int $number): string`
+- **Example**: `KoKrOrdinalDriver` - Unique ordinal words for 1-10 + NumberFormatter for 11+
 
 #### CurrencyDriver (Currency Settings)
-- **Location**: `src/CurrencyDriver/{currency}.php`
-- **Format**: Returns associative array
-- **Keys**:
-  - `currencySpellOut`: Regex pattern array
-  - `roundDigits`: Rounding rules by digit count
+- **Interface**: `src/Drivers/Contracts/CurrencyDriver.php`
+- **Contract**:
+  - `currencySpellOut(string $formatted): string` - pattern replacement
+  - `roundDigits(): array` - rounding rules by digit count
+- **Example**: `KrwCurrencyDriver` - Korean Won settings
 
 ## 🎯 Important Design Patterns
 
@@ -96,9 +117,12 @@ composer lint          # Auto-fix code style
 ```
 
 ### Test Coverage
-- 11 tests, 30 assertions
+- 28 tests, 83 assertions (11 original + 10 cast + 7 driver registry tests)
 - All methods tested
-- Edge cases included (0, null, various rounding)
+- Edge cases included (0, null, various rounding, formatted-string input)
+- Eloquent cast DB roundtrip via SQLite in-memory (Orchestra Testbench)
+- Driver registry unit tests (defaults, custom registration, reset)
+- Money value object formatting (currency, price, smartPrice, spellOut, JSON)
 
 ## 📝 Coding Conventions
 
@@ -120,14 +144,15 @@ composer lint          # Auto-fix code style
 ## 🔧 Common Tasks
 
 ### Adding New Locale
-1. Create `src/OrdinalDriver/{locale}.php`
-2. Return Closure with number → ordinal conversion logic
+1. Create a class implementing `Cable8mm\NFormat\Drivers\Contracts\OrdinalDriver`
+2. Register it with `NFormat::registerOrdinal($locale, $driver)` or `DriverRegistry::registerOrdinal()`
 3. Add tests
 
 ### Adding New Currency
-1. Create `src/CurrencyDriver/{currency}.php`
-2. Define `currencySpellOut` patterns and `roundDigits` rules
-3. Add tests
+1. Create a class implementing `Cable8mm\NFormat\Drivers\Contracts\CurrencyDriver`
+2. Implement `currencySpellOut()` patterns and `roundDigits()` rules
+3. Register it with `NFormat::registerCurrency($currency, $driver)` or `DriverRegistry::registerCurrency()`
+4. Add tests
 
 ### Bug Fixes
 1. Write failing test first (TDD)
@@ -139,7 +164,7 @@ composer lint          # Auto-fix code style
 
 ### Don'ts
 1. **Minimize static state changes**: `$locale`, `$currency` are global state
-2. **Be careful modifying driver files**: KRW.php, ko_KR.php, etc.
+2. **Be careful modifying driver classes**: `KrwCurrencyDriver`, `KoKrOrdinalDriver`, etc.
 3. **Breaking changes**: Follow SemVer when changing public API
 4. **Never omit type hints**: Utilize PHP 8.0+ features
 
