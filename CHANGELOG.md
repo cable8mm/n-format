@@ -1,5 +1,15 @@
 # Release Notes
 
+## v2.0.0 - 2026-08-23
+
+### What's Changed
+
+* feat: update new currency and ordinal casting features by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/12
+* doc: refactor docs and enhance project structure by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/13
+* feat: enhance numeric parsing and update percent formatting to support float values by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/14
+
+**Full Changelog**: https://github.com/cable8mm/n-format/compare/v1.3.1...v2.0.0
+
 ## v1.3.1 - 2026-07-02
 
 ### What's Changed
@@ -73,6 +83,7 @@ echo NFormat::rawPercent(12346);
 
 // output
 // 12,346%
+
 
 
 
