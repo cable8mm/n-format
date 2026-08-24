@@ -121,7 +121,8 @@ class Product extends Model
 $product = new Product;
 $product->price = '₩12,350원';
 
-echo $product->price;                // ₩12,350
+echo $product->price;                // 12350 (raw value)
+echo $product->price->currency();    // ₩12,350
 echo $product->price->price(-2);     // 12400
 echo $product->price->smartPrice();  // 12400
 echo $product->price->spellOut();    // 12,350 원
@@ -132,7 +133,8 @@ echo $product->price->value();       // 12350
 
 ```php
 $product->price = 0;
-echo $product->price; // 무료
+echo $product->price;                // 0 (raw value)
+echo $product->price->currency();    // 무료
 ```
 
 기본 번역은 한국어 `무료`, 영어 `Free`, 일본어 `無料`이며, `AsCurrency`에 지정한 로케일을 기준으로 선택합니다. 번역 파일은 다음 명령으로 게시할 수 있습니다.
