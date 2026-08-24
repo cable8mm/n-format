@@ -19,7 +19,7 @@ The package evolved from a single `NFormat` wrapper into a Laravel package. Do n
 
 1. Locale- and currency-specific behavior belongs in drivers, not in conditional branches inside `NFormat`.
 2. Core formatting through `NFormat` must remain usable outside a Laravel application. Laravel-specific behavior belongs in the service provider and Eloquent casts.
-3. Eloquent casts return presentation-oriented value objects on read and raw numeric values on write.
+3. Eloquent casts return immutable value objects on read and raw numeric values on write. Value-object string conversion is raw by default; presentation formatting is explicit.
 4. `NFormat::$locale` and `NFormat::$currency` are global static state. Change them sparingly and restore them in tests.
 5. Preserve public type declarations, argument order, default values, and PHPDoc examples unless a breaking change is intentional.
 6. `ext-intl` is a runtime requirement. Keep it declared in `composer.json`.
@@ -104,7 +104,8 @@ The package must not require a Laravel application for core `NFormat`, driver, o
 
 `Money` is immutable and implements `Stringable` and `JsonSerializable`:
 
-- `__toString()` and `currency()` return the translated free label for zero, otherwise delegate to `NFormat::currency()`.
+- `__toString()` returns the raw numeric value as a string for safe interoperability.
+- `currency()` returns the translated free label for zero, otherwise delegates to `NFormat::currency()`.
 - `price(?int)` delegates to `NFormat::price()`.
 - `smartPrice()` delegates to `NFormat::smartPrice()`.
 - `spellOut()` delegates to `NFormat::currencySpellOut()`.

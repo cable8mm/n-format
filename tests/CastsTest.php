@@ -19,17 +19,17 @@ class CastsTest extends TestCase
 
         $this->assertSame(12346, $product->getAttributes()['price']);
         $this->assertInstanceOf(Money::class, $product->price);
-        $this->assertSame('₩12,346', (string) $product->price);
+        $this->assertSame('12346', (string) $product->price);
         $this->assertSame('₩12,346', $product->price->currency());
     }
 
-    public function test_currency_is_default_get_behavior(): void
+    public function test_currency_is_explicit_presentation_behavior(): void
     {
         $product = new Product;
 
         $product->price = 12346;
 
-        $this->assertSame('₩12,346', (string) $product->price);
+        $this->assertSame('12346', (string) $product->price);
         $this->assertSame('₩12,346', $product->price->currency());
     }
 
@@ -39,7 +39,8 @@ class CastsTest extends TestCase
 
         $product->price = 0;
 
-        $this->assertSame('무료', (string) $product->price);
+        $this->assertSame('0', (string) $product->price);
+        $this->assertSame('무료', $product->price->currency());
         $this->assertSame(0, $product->price->value());
         $this->assertSame(0, $product->price->jsonSerialize());
     }
@@ -50,9 +51,10 @@ class CastsTest extends TestCase
 
         $product->jpy = 0;
 
-        $this->assertSame('無料', (string) $product->jpy);
+        $this->assertSame('0', (string) $product->jpy);
+        $this->assertSame('無料', $product->jpy->currency());
 
-        $this->assertSame('Free', (string) new Money(0, 'en'));
+        $this->assertSame('Free', (new Money(0, 'en'))->currency());
     }
 
     public function test_price_and_smart_price_methods_on_money(): void
@@ -82,7 +84,7 @@ class CastsTest extends TestCase
         $product->price = '₩12,350원';
 
         $this->assertSame(12350, $product->getAttributes()['price']);
-        $this->assertSame('₩12,350', (string) $product->price);
+        $this->assertSame('12350', (string) $product->price);
     }
 
     public function test_cast_with_locale_and_currency(): void
@@ -93,12 +95,14 @@ class CastsTest extends TestCase
 
         // Note: the Japanese locale renders the full-width yen sign (￥).
         $this->assertInstanceOf(Money::class, $product->jpy);
-        $this->assertSame('￥12,345', (string) $product->jpy);
+        $this->assertSame('12345', (string) $product->jpy);
+        $this->assertSame('￥12,345', $product->jpy->currency());
 
         $product->jpy = '￥12,345';
 
         $this->assertSame(12345, $product->getAttributes()['jpy']);
-        $this->assertSame('￥12,345', (string) $product->jpy);
+        $this->assertSame('12345', (string) $product->jpy);
+        $this->assertSame('￥12,345', $product->jpy->currency());
     }
 
     public function test_money_value_object_is_immutable_and_json_serializes_raw(): void
@@ -154,16 +158,16 @@ class CastsTest extends TestCase
             'jpy' => 12345,
         ]);
 
-        $this->assertSame('₩12,346', (string) $product->price);
+        $this->assertSame('12346', (string) $product->price);
         $this->assertSame(12346, $product->getRawOriginal('price'));
 
         $fresh = $product->fresh();
 
         $this->assertInstanceOf(Money::class, $fresh->price);
-        $this->assertSame('₩12,346', (string) $fresh->price);
+        $this->assertSame('12346', (string) $fresh->price);
         $this->assertSame('12300', $fresh->price->price(-2));
         $this->assertSame('12300', $fresh->price->smartPrice());
-        $this->assertSame('￥12,345', (string) $fresh->jpy);
+        $this->assertSame('12345', (string) $fresh->jpy);
 
         $this->assertSame(1, Product::where('price', 12346)->count());
         $this->assertSame(1, Product::where('jpy', 12345)->count());
@@ -176,7 +180,8 @@ class CastsTest extends TestCase
         $product = new Product;
         $product->jpy = 1000;
 
-        $this->assertSame('￥1,000', (string) $product->jpy);
+        $this->assertSame('1000', (string) $product->jpy);
+        $this->assertSame('￥1,000', $product->jpy->currency());
     }
 
     public function test_as_number_stores_raw_and_returns_number_object(): void
