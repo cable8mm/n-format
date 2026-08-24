@@ -33,7 +33,7 @@ final class Number implements JsonSerializable, Stringable
      */
     public function __toString(): string
     {
-        return NFormat::decimal($this->value, '0', $this->locale);
+        return NFormat::decimal(number: $this->value, zero: '0', locale: $this->locale);
     }
 
     /**
@@ -43,7 +43,7 @@ final class Number implements JsonSerializable, Stringable
      */
     public function decimal(?string $zero = '0'): string
     {
-        return NFormat::decimal($this->value, $zero, $this->locale);
+        return NFormat::decimal(number: $this->value, zero: $zero, locale: $this->locale);
     }
 
     /**
@@ -53,7 +53,7 @@ final class Number implements JsonSerializable, Stringable
      */
     public function spellOut(): string
     {
-        return NFormat::spellOut((int) $this->value, $this->locale);
+        return NFormat::spellOut(number: (int) $this->value, locale: $this->locale);
     }
 
     /**
@@ -63,7 +63,7 @@ final class Number implements JsonSerializable, Stringable
      */
     public function ordinalSpellOut(): string
     {
-        return NFormat::ordinalSpellOut((int) $this->value, $this->locale);
+        return NFormat::ordinalSpellOut(number: (int) $this->value, locale: $this->locale);
     }
 
     /**
@@ -73,7 +73,7 @@ final class Number implements JsonSerializable, Stringable
      */
     public function percent(): string
     {
-        return NFormat::percent($this->value, $this->locale);
+        return NFormat::percent(number: $this->value, locale: $this->locale);
     }
 
     /**
@@ -83,7 +83,7 @@ final class Number implements JsonSerializable, Stringable
      */
     public function rawPercent(): string
     {
-        return NFormat::rawPercent($this->value, $this->locale);
+        return NFormat::rawPercent(number: $this->value, locale: $this->locale);
     }
 
     /**

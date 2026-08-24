@@ -60,6 +60,21 @@ NFormat::rawPercent(12346);       // 12,346%
 
 `percent()`는 입력값에 100을 곱하고, `rawPercent()`는 입력값을 100으로 나눈 뒤 퍼센트로 표시합니다.
 
+PHP 8.2 이상에서는 파라미터 이름을 지정하는 named arguments도 사용할 수 있습니다. 긴 호출에서 각 값의 의미를 명확하게 표현할 수 있습니다.
+
+```php
+NFormat::currency(
+    number: 12346,
+    zero: '-',
+    locale: 'ja_JP',
+    currency: 'JPY',
+); // ￥12,346
+
+NFormat::price(number: 12346, roundDigits: -2); // 12300
+```
+
+메서드 파라미터 이름은 공개 API의 일부이므로, named arguments를 사용하는 경우 파라미터 이름 변경에 주의해야 합니다.
+
 호출별로 로케일과 통화를 지정할 수 있습니다.
 
 ```php

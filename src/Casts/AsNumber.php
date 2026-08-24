@@ -45,7 +45,7 @@ final class AsNumber implements CastsAttributes
 
         return is_null($number)
             ? null
-            : new Number($number, $this->locale);
+            : new Number(value: $number, locale: $this->locale);
     }
 
     /**
