@@ -240,10 +240,10 @@ class NFormat extends NumberFormatter
             $roundDigits = $driver->roundDigits();
 
             if (array_key_exists($numberOfDigits, $roundDigits)) {
-                return self::price($number, $roundDigits[$numberOfDigits]);
+                return self::price(number: $number, roundDigits: $roundDigits[$numberOfDigits]);
             }
 
-            return self::price($number, end($roundDigits));
+            return self::price(number: $number, roundDigits: end($roundDigits));
         }
 
         return self::price($number);

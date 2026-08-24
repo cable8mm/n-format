@@ -51,7 +51,7 @@ final class AsCurrency implements CastsAttributes
 
         return is_null($number)
             ? null
-            : new Money($number, $this->locale, $this->currency);
+            : new Money(value: $number, locale: $this->locale, currency: $this->currency);
     }
 
     /**

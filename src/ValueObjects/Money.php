@@ -62,7 +62,12 @@ final class Money implements JsonSerializable, Stringable
             return $this->freeLabel();
         }
 
-        return NFormat::currency($this->value, '0', $this->locale, $this->currency);
+        return NFormat::currency(
+            number: $this->value,
+            zero: '0',
+            locale: $this->locale,
+            currency: $this->currency,
+        );
     }
 
     /**
@@ -72,7 +77,7 @@ final class Money implements JsonSerializable, Stringable
      */
     public function price(?int $roundDigits = null): string|false
     {
-        return NFormat::price($this->value, $roundDigits);
+        return NFormat::price(number: $this->value, roundDigits: $roundDigits);
     }
 
     /**
@@ -82,7 +87,7 @@ final class Money implements JsonSerializable, Stringable
      */
     public function smartPrice(): string|false
     {
-        return NFormat::smartPrice($this->value, $this->currency);
+        return NFormat::smartPrice(number: $this->value, currency: $this->currency);
     }
 
     /**
@@ -92,7 +97,11 @@ final class Money implements JsonSerializable, Stringable
      */
     public function spellOut(): string
     {
-        return NFormat::currencySpellOut($this->value, $this->locale, $this->currency);
+        return NFormat::currencySpellOut(
+            number: $this->value,
+            locale: $this->locale,
+            currency: $this->currency,
+        );
     }
 
     /**

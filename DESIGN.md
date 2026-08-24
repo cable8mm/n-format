@@ -165,6 +165,7 @@ When adding locale or currency support, add the driver class, registration path,
 - Missing currency driver: `currencySpellOut()` returns the formatted NumberFormatter currency string unchanged.
 - `intl` is mandatory because `NFormat` directly uses `NumberFormatter`.
 - Preserve public signatures and return types under SemVer.
+- Treat public parameter names as part of the API because PHP 8.2+ callers may use named arguments.
 - Preserve current floating-point formatting and rounding behavior unless the change is explicitly intended.
 - `Money` and `Number` are value objects, not mutable models; do not add setters or in-place mutation.
 

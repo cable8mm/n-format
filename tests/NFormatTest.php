@@ -65,6 +65,21 @@ class NFormatTest extends TestCase
         $this->assertEquals('-', $currency);
     }
 
+    public function test_supports_named_arguments(): void
+    {
+        $this->assertSame('五', NFormat::spellOut(number: 5, locale: 'ja_JP'));
+        $this->assertSame('￥12,346', NFormat::currency(
+            number: 12346,
+            zero: '-',
+            locale: 'ja_JP',
+            currency: 'JPY',
+        ));
+        $this->assertSame('-', NFormat::decimal(number: 0, zero: '-', locale: 'ko_KR'));
+        $this->assertSame('12,346%', NFormat::rawPercent(number: 12346, locale: 'ko_KR'));
+        $this->assertSame('12300', NFormat::price(number: 12346, roundDigits: -2));
+        $this->assertSame('12300', NFormat::smartPrice(number: 12346, currency: 'KRW'));
+    }
+
     public function test_currency_speech_out(): void
     {
         NFormat::$locale = 'ko_KR';
