@@ -108,6 +108,8 @@ The package must not require a Laravel application for core `NFormat`, driver, o
 - `currency()` always delegates to `NFormat::currency()`, including zero amounts.
 - `freeLabel()` returns the translated free label.
 - `display()` returns `freeLabel()` for zero amounts and `currency()` otherwise.
+- `spellOut()` always returns the spelled-out currency amount, including zero amounts.
+- `displaySpelled()` returns `freeLabel()` for zero amounts and `spellOut()` otherwise.
 - `price(?int)` delegates to `NFormat::price()`.
 - `smartPrice()` delegates to `NFormat::smartPrice()`.
 - `spellOut()` delegates to `NFormat::currencySpellOut()`.
