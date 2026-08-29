@@ -1,5 +1,13 @@
 # Release Notes
 
+## v2.3.1 - 2026-08-29
+
+### What's Changed
+
+* feat: add displaySpelled method to Money value object by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/19
+
+**Full Changelog**: https://github.com/cable8mm/n-format/compare/v2.3.0...v2.3.1
+
 ## v2.3.0 - 2026-08-29
 
 ### What's Changed
@@ -108,6 +116,7 @@ echo NFormat::rawPercent(12346);
 
 // output
 // 12,346%
+
 
 
 
