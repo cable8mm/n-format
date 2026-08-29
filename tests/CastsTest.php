@@ -21,6 +21,7 @@ class CastsTest extends TestCase
         $this->assertInstanceOf(Money::class, $product->price);
         $this->assertSame('12346', (string) $product->price);
         $this->assertSame('₩12,346', $product->price->currency());
+        $this->assertSame('₩12,346', $product->price->display());
     }
 
     public function test_currency_is_explicit_presentation_behavior(): void
@@ -33,28 +34,34 @@ class CastsTest extends TestCase
         $this->assertSame('₩12,346', $product->price->currency());
     }
 
-    public function test_zero_currency_is_translated_as_free(): void
+    public function test_zero_currency_is_formatted_as_currency(): void
     {
         $product = new Product;
 
         $product->price = 0;
 
         $this->assertSame('0', (string) $product->price);
-        $this->assertSame('무료', $product->price->currency());
+        $this->assertSame('₩0', $product->price->currency());
+        $this->assertSame('무료', $product->price->freeLabel());
+        $this->assertSame('무료', $product->price->display());
         $this->assertSame(0, $product->price->value());
         $this->assertSame(0, $product->price->jsonSerialize());
     }
 
-    public function test_zero_currency_uses_the_cast_locale_translation(): void
+    public function test_zero_currency_uses_the_cast_locale_translation_for_display(): void
     {
         $product = new Product;
 
         $product->jpy = 0;
 
         $this->assertSame('0', (string) $product->jpy);
-        $this->assertSame('無料', $product->jpy->currency());
+        $this->assertSame('￥0', $product->jpy->currency());
+        $this->assertSame('無料', $product->jpy->freeLabel());
+        $this->assertSame('無料', $product->jpy->display());
 
-        $this->assertSame('Free', (new Money(0, 'en'))->currency());
+        $money = new Money(0, 'en');
+        $this->assertSame('Free', $money->freeLabel());
+        $this->assertSame('Free', $money->display());
     }
 
     public function test_price_and_smart_price_methods_on_money(): void

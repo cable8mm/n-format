@@ -144,12 +144,14 @@ echo $product->price->spellOut();    // 12,350 원
 echo $product->price->value();       // 12350
 ```
 
-금액이 `0`이면 통화 기호 대신 번역된 무료 문구를 표시합니다.
+`currency()`는 금액이 `0`이어도 통화 형식으로 표시합니다. 무료 상품처럼 0원을 별도 문구로 표시하려면 `display()`를 사용합니다.
 
 ```php
 $product->price = 0;
 echo $product->price;                // 0 (raw value)
-echo $product->price->currency();    // 무료
+echo $product->price->currency();    // ₩0
+echo $product->price->display();     // 무료
+echo $product->price->freeLabel();   // 무료
 ```
 
 기본 번역은 한국어 `무료`, 영어 `Free`, 일본어 `無料`이며, `AsCurrency`에 지정한 로케일을 기준으로 선택합니다. 번역 파일은 다음 명령으로 게시할 수 있습니다.
