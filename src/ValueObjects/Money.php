@@ -12,7 +12,8 @@ use Stringable;
  * Immutable money value object returned by the AsCurrency cast.
  *
  * Echoing the object returns the raw numeric value, while currency(),
- * display(), price(), smartPrice(), and spellOut() expose formatted helpers.
+ * display(), displaySpelled(), price(), smartPrice(), and spellOut() expose
+ * formatted helpers.
  */
 final class Money implements JsonSerializable, Stringable
 {
@@ -110,6 +111,18 @@ final class Money implements JsonSerializable, Stringable
             locale: $this->locale,
             currency: $this->currency,
         );
+    }
+
+    /**
+     * Return the free label for a zero amount, otherwise a spelled-out currency string.
+     */
+    public function displaySpelled(): string
+    {
+        if ($this->value === 0 || $this->value === 0.0) {
+            return $this->freeLabel();
+        }
+
+        return $this->spellOut();
     }
 
     /**

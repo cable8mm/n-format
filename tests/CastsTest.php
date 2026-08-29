@@ -42,8 +42,10 @@ class CastsTest extends TestCase
 
         $this->assertSame('0', (string) $product->price);
         $this->assertSame('₩0', $product->price->currency());
+        $this->assertSame('0 원', $product->price->spellOut());
         $this->assertSame('무료', $product->price->freeLabel());
         $this->assertSame('무료', $product->price->display());
+        $this->assertSame('무료', $product->price->displaySpelled());
         $this->assertSame(0, $product->price->value());
         $this->assertSame(0, $product->price->jsonSerialize());
     }
@@ -58,10 +60,12 @@ class CastsTest extends TestCase
         $this->assertSame('￥0', $product->jpy->currency());
         $this->assertSame('無料', $product->jpy->freeLabel());
         $this->assertSame('無料', $product->jpy->display());
+        $this->assertSame('無料', $product->jpy->displaySpelled());
 
         $money = new Money(0, 'en');
         $this->assertSame('Free', $money->freeLabel());
         $this->assertSame('Free', $money->display());
+        $this->assertSame('Free', $money->displaySpelled());
     }
 
     public function test_price_and_smart_price_methods_on_money(): void
@@ -81,6 +85,7 @@ class CastsTest extends TestCase
         $product->price = 12346;
 
         $this->assertSame('12,346 원', $product->price->spellOut());
+        $this->assertSame('12,346 원', $product->price->displaySpelled());
         $this->assertSame(NFormat::currencySpellOut(12346), $product->price->spellOut());
     }
 
