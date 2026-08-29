@@ -1,5 +1,13 @@
 # Release Notes
 
+## v2.3.0 - 2026-08-29
+
+### What's Changed
+
+* feat: enhance Money value object to support display of zero amounts and add freeLabel method by [@cable8mm](https://github.com/cable8mm) in https://github.com/cable8mm/n-format/pull/18
+
+**Full Changelog**: https://github.com/cable8mm/n-format/compare/v2.2.0...v2.3.0
+
 ## v2.2.0 - 2026-08-24
 
 ### What's Changed
@@ -100,6 +108,7 @@ echo NFormat::rawPercent(12346);
 
 // output
 // 12,346%
+
 
 
 
