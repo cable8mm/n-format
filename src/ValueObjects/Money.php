@@ -12,7 +12,7 @@ use Stringable;
  * Immutable money value object returned by the AsCurrency cast.
  *
  * Echoing the object returns the raw numeric value, while currency(),
- * price(), smartPrice(), and spellOut() expose formatted helpers.
+ * display(), price(), smartPrice(), and spellOut() expose formatted helpers.
  */
 final class Money implements JsonSerializable, Stringable
 {
@@ -44,7 +44,7 @@ final class Money implements JsonSerializable, Stringable
     /**
      * Return the translated label for a zero amount.
      */
-    protected function freeLabel(): string
+    public function freeLabel(): string
     {
         if (! function_exists('trans')) {
             return '무료';
@@ -58,16 +58,24 @@ final class Money implements JsonSerializable, Stringable
      */
     public function currency(): string
     {
-        if ($this->value === 0 || $this->value === 0.0) {
-            return $this->freeLabel();
-        }
-
         return NFormat::currency(
             number: $this->value,
             zero: '0',
             locale: $this->locale,
             currency: $this->currency,
         );
+    }
+
+    /**
+     * Return the free label for a zero amount, otherwise a currency string.
+     */
+    public function display(): string
+    {
+        if ($this->value === 0 || $this->value === 0.0) {
+            return $this->freeLabel();
+        }
+
+        return $this->currency();
     }
 
     /**

@@ -105,7 +105,9 @@ The package must not require a Laravel application for core `NFormat`, driver, o
 `Money` is immutable and implements `Stringable` and `JsonSerializable`:
 
 - `__toString()` returns the raw numeric value as a string for safe interoperability.
-- `currency()` returns the translated free label for zero, otherwise delegates to `NFormat::currency()`.
+- `currency()` always delegates to `NFormat::currency()`, including zero amounts.
+- `freeLabel()` returns the translated free label.
+- `display()` returns `freeLabel()` for zero amounts and `currency()` otherwise.
 - `price(?int)` delegates to `NFormat::price()`.
 - `smartPrice()` delegates to `NFormat::smartPrice()`.
 - `spellOut()` delegates to `NFormat::currencySpellOut()`.
