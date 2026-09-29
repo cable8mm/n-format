@@ -24,9 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: build doctum docs
         uses: sudo-bot/action-doctum@v5
         with:
@@ -35,10 +35,10 @@ jobs:
           # (optional) defaults to '--output-format=github --no-ansi --no-progress -v'
           cli-args: "--output-format=github --no-ansi --no-progress -v"
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           # Upload entire repository
           path: ./build
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
